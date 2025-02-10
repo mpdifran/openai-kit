@@ -37,6 +37,7 @@ public protocol ModelID {
 extension Model {
     public enum GPT4: String, ModelID {
         case gpt4 = "gpt-4"
+        case gpt4Turbo = "gpt-4-turbo"
         case gpt40314 = "gpt-4-0314"
         case gpt4_32k = "gpt-4-32k"
         case gpt4_32k0314 = "gpt-4-32k-0314"
