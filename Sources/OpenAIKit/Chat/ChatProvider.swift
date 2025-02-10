@@ -25,7 +25,8 @@ public struct ChatProvider {
         presencePenalty: Double = 0.0,
         frequencyPenalty: Double = 0.0,
         logitBias: [String : Int] = [:],
-        user: String? = nil
+        user: String? = nil,
+        responseFormat: ResponseFormat? = nil
     ) async throws -> Chat {
         
         let request = try CreateChatRequest(
@@ -40,7 +41,8 @@ public struct ChatProvider {
             presencePenalty: presencePenalty,
             frequencyPenalty: frequencyPenalty,
             logitBias: logitBias,
-            user: user
+            user: user,
+            responseFormat: responseFormat
         )
     
         return try await requestHandler.perform(request: request)
