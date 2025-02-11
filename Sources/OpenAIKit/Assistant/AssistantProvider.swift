@@ -68,4 +68,25 @@ public struct AssistantProvider {
 
         return try await requestHandler.perform(request: request)
     }
+
+    /**
+     Create a message.
+     POST
+
+     https://api.openai.com/v1/threads/<thread_id>/messages
+
+     Create a message.
+     */
+    public func createMessage(
+        threadID: String,
+        message: Thread.Message
+    ) async throws -> Message {
+
+        let request = try CreateMessageRequest(
+            threadID: threadID,
+            message: message
+        )
+
+        return try await requestHandler.perform(request: request)
+    }
 }
