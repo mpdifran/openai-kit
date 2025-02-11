@@ -89,4 +89,23 @@ public struct AssistantProvider {
 
         return try await requestHandler.perform(request: request)
     }
+
+    /**
+     Create a run.
+     POST
+
+     https://api.openai.com/v1/threads/<thread_id>/runs
+     Create a run.
+     */
+    public func createRun(
+        assistantID: String,
+        threadID: String
+    ) async throws -> Run {
+        let request = try CreateRunRequest(
+            threadID: threadID,
+            assistantID: assistantID
+        )
+
+        return try await requestHandler.perform(request: request)
+    }
 }
