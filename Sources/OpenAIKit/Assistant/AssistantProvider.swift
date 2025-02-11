@@ -5,6 +5,8 @@
 //  Created by Mark DiFranco on 2025-02-10.
 //
 
+import Foundation
+
 public struct AssistantProvider {
 
     private let requestHandler: RequestHandler
@@ -166,5 +168,61 @@ public struct AssistantProvider {
         )
 
         return try await requestHandler.perform(request: request)
+    }
+
+    /**
+     Polls a run until it completes, then retrieves the latest assistant message.
+
+     - Parameters:
+        - threadID: The ID of the thread.
+        - runID: The ID of the run.
+        - pollInterval: The number of seconds to wait between poll requests.
+
+     - Throws: An error if the polling or message retrieval fails.
+
+     - Returns: The latest assistant message after the run completes.
+     */
+    public func pollRunForAssistantResponse(
+        threadID: String,
+        runID: String,
+        pollInterval: TimeInterval = 2
+    ) async throws -> Message? {
+        var run: Run
+        repeat {
+            try await Task.sleep(nanoseconds: UInt64(pollInterval) * 1_000_000_000)
+            run = try await retrieveRun(threadID: threadID, runID: runID)
+        } while run.status != .completed && run.status != .failed
+
+        guard run.status == .completed else {
+            switch run.status {
+            case .incomplete:
+                if let incompleteDetails = run.incompleteDetails {
+                    throw NSError(
+                        domain: "AssistantProvider",
+                        code: 1,
+                        userInfo: [NSLocalizedDescriptionKey: "Run incomplete: \(incompleteDetails)"]
+                    )
+                }
+            case .failed:
+                if let lastError = run.lastError {
+                    throw NSError(
+                        domain: "AssistantProvider",
+                        code: 1,
+                        userInfo: [NSLocalizedDescriptionKey: "Run Failed [Code \(lastError.code.rawValue)]: \(lastError.message)"]
+                    )
+                }
+            default:
+                break
+            }
+
+            throw NSError(domain: "AssistantProvider", code: 1, userInfo: [NSLocalizedDescriptionKey: "Run failed"])
+        }
+
+        let messages = try await listMessages(
+            threadID: threadID,
+            runID: runID
+        )
+
+        return messages.last(where: { $0.role == .assistant })
     }
 }
