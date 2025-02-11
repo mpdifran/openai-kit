@@ -8,14 +8,14 @@
 import Foundation
 
 public struct Run: Codable {
-    let id: String
-    let threadId: String
-    let assistantId: String
-    let status: Status
-    let requiredAction: RequiredAction?
-    let lastError: LastError?
-    let incompleteDetails: IncompleteDetails?
-    let model: String
+    public let id: String
+    public let threadId: String
+    public let assistantId: String
+    public let status: Status
+    public let requiredAction: RequiredAction?
+    public let lastError: LastError?
+    public let incompleteDetails: IncompleteDetails?
+    public let model: String
 }
 
 public extension Run {
@@ -32,26 +32,26 @@ public extension Run {
     }
 
     struct RequiredAction: Codable {
-        let submitToolOutputs: SubmitToolOutputs
+        public let submitToolOutputs: SubmitToolOutputs
     }
 
     struct SubmitToolOutputs: Codable {
-        let toolCalls: [ToolCall]
+        public let toolCalls: [ToolCall]
     }
 
     struct ToolCall: Codable {
-        let id: String
-        let function: Function
+        public let id: String
+        public let function: Function
     }
 
     struct Function: Codable {
-        let name: String
-        let arguments: String
+        public let name: String
+        public let arguments: String
     }
 
     struct LastError: Codable {
-        let code: ErrorCode
-        let message: String
+        public let code: ErrorCode
+        public let message: String
     }
 
     enum ErrorCode: String, Codable {
@@ -61,6 +61,6 @@ public extension Run {
     }
 
     struct IncompleteDetails: Codable {
-        let reason: String
+        public let reason: String
     }
 }

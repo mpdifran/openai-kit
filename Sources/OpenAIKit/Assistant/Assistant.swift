@@ -8,12 +8,12 @@
 import Foundation
 
 public struct Assistant: Codable {
-    let id: String
-    let name: String?
-    let description: String?
-    let model: String
-    let instructions: String
-    let metadata: [String : String]
+    public let id: String
+    public let name: String?
+    public let description: String?
+    public let model: String
+    public let instructions: String
+    public let metadata: [String : String]
 }
 
 public extension Assistant {
@@ -51,7 +51,7 @@ public extension Assistant.Tool {
         public let parameters: Parameters?
         public let strict: Bool
 
-        init(
+        public init(
             name: String,
             description: String? = nil,
             parameters: Parameters? = nil,

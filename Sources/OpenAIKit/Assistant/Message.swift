@@ -8,14 +8,14 @@
 import Foundation
 
 public struct Message: Codable {
-    let id: String
-    let threadId: String
-    let assistantId: String?
-    let runId: String?
-    let status: Status
-    let incompleteDetails: IncompleteDetails?
-    let role: Role
-    let metadata: [String : String]
+    public let id: String
+    public let threadId: String
+    public let assistantId: String?
+    public let runId: String?
+    public let status: Status
+    public let incompleteDetails: IncompleteDetails?
+    public let role: Role
+    public let metadata: [String : String]
 }
 
 public extension Message {
@@ -31,6 +31,6 @@ public extension Message {
     }
 
     struct IncompleteDetails: Codable {
-        let reason: String
+        public let reason: String
     }
 }
