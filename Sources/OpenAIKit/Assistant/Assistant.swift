@@ -13,6 +13,7 @@ public struct Assistant: Codable {
     let description: String?
     let model: String
     let instructions: String
+    let metadata: [String : String]
 }
 
 public extension Assistant {

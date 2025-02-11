@@ -47,4 +47,25 @@ public struct AssistantProvider {
 
         return try await requestHandler.perform(request: request)
     }
+
+    /**
+     Create a thread.
+     POST
+
+     https://api.openai.com/v1/threads
+
+     Create a thread.
+     */
+    public func createThread(
+        messages: [Thread.Message],
+        metadata: [String : String]? = nil
+    ) async throws -> Thread {
+
+        let request = try CreateThreadRequest(
+            messages: messages,
+            metadata: metadata
+        )
+
+        return try await requestHandler.perform(request: request)
+    }
 }
