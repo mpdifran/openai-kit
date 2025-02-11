@@ -91,10 +91,30 @@ public struct AssistantProvider {
     }
 
     /**
+     List Messages.
+     GET
+
+     https://api.openai.com/v1/threads/{thread_id}/messages
+
+     Returns a list of messages for a given thread.
+     */
+    public func listMessages(
+        threadID: String,
+        runID: String?
+    ) async throws -> [Message] {
+        let request = ListMessagesRequest(
+            threadID: threadID,
+            runID: runID
+        )
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
      Create a run.
      POST
 
      https://api.openai.com/v1/threads/<thread_id>/runs
+
      Create a run.
      */
     public func createRun(
@@ -105,6 +125,23 @@ public struct AssistantProvider {
             threadID: threadID,
             assistantID: assistantID
         )
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
+     Retrieve a run.
+     GET
+
+     https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}
+
+     Retrieve a run.
+     */
+    public func retrieveRun(
+        threadID: String,
+        runID: String
+    ) async throws -> Run {
+        let request = RetrieveRunRequest(threadID: threadID, runID: runID)
 
         return try await requestHandler.perform(request: request)
     }
