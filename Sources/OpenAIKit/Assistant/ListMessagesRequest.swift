@@ -13,6 +13,7 @@ struct ListMessagesRequest: Request {
     let headers: HTTPHeaders = ["OpenAI-Beta" : "assistants=v2"]
     let method: HTTPMethod = .GET
     let path: String
+    let queryItems: [URLQueryItem]?
     let body: Data?
 
     init(
@@ -20,10 +21,12 @@ struct ListMessagesRequest: Request {
         runID: String?
     ) {
         if let runID {
-            self.path = "/v1/threads/\(threadID)/messages?run_id=\(runID)"
+            queryItems = [URLQueryItem(name: "run_id", value: runID)]
         } else {
-            self.path = "/v1/threads/\(threadID)/messages"
+            queryItems = nil
         }
+
+        self.path = "/v1/threads/\(threadID)/messages"
         self.body = nil
     }
 }

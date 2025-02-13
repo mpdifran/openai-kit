@@ -15,7 +15,9 @@ extension RequestHandler {
         components.path = [configuration.api?.path, request.path]
             .compactMap { $0 }
             .joined()
-            
+
+        components.queryItems = request.queryItems
+
         guard let url = components.url else {
             throw RequestHandlerError.invalidURLGenerated
         }
