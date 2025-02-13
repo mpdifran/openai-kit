@@ -11,7 +11,7 @@ import Foundation
 
 struct CreateAssistantRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "v1/assistants"
+    let path = "/v1/assistants"
     let body: Data?
 
     init(

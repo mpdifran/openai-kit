@@ -18,7 +18,7 @@ struct CreateRunRequest: Request {
         threadID: String,
         assistantID: String
     ) throws {
-        self.path = "v1/threads/\(threadID)/runs"
+        self.path = "/v1/threads/\(threadID)/runs"
 
         let body = Body(assistantId: assistantID)
 

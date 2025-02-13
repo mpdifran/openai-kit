@@ -11,7 +11,7 @@ import Foundation
 
 struct CreateThreadRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "v1/threads"
+    let path = "/v1/threads"
     let body: Data?
 
     init(

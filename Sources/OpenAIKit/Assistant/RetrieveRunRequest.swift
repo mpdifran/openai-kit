@@ -18,7 +18,7 @@ struct RetrieveRunRequest: Request {
         threadID: String,
         runID: String
     ) {
-        self.path = "v1/threads/\(threadID)/runs/\(runID)"
+        self.path = "/v1/threads/\(threadID)/runs/\(runID)"
         self.body = nil
     }
 }

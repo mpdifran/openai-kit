@@ -26,9 +26,9 @@ struct ListMessagesRequest: Request {
         runID: String?
     ) {
         if let runID {
-            self.path = "v1/threads/\(threadID)/messages?run_id=\(runID)"
+            self.path = "/v1/threads/\(threadID)/messages?run_id=\(runID)"
         } else {
-            self.path = "v1/threads/\(threadID)/messages"
+            self.path = "/v1/threads/\(threadID)/messages"
         }
         self.body = nil
     }
