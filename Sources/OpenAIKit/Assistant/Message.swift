@@ -21,7 +21,7 @@ public struct Message: Codable {
 
 public extension Message {
     enum Status: String, Codable {
-        case inProgress
+        case inProgress = "in_progress"
         case incomplete
         case completed
     }

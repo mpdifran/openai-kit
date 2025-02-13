@@ -38,8 +38,8 @@ public extension Assistant {
     }
 
     enum ToolType: String, Codable {
-        case codeInterpreter
-//        case fileSearch
+        case codeInterpreter = "code_interpreter"
+//        case fileSearch = "file_search"
         case function
     }
 }
