@@ -16,7 +16,7 @@ public struct AssistantProvider {
     }
 
     /**
-    Create an assistant.
+     Create an assistant.
      POST
 
      https://api.openai.com/v1/assistants
@@ -51,6 +51,59 @@ public struct AssistantProvider {
     }
 
     /**
+     Modify an assistant.
+     POST
+
+     https://api.openai.com/v1/assistants/<assistant_id>
+
+     Modifies an assistant.
+     */
+    public func modifyAssistant(
+        assistantID: String,
+        model: ModelID? = nil,
+        name: String? = nil,
+        instructions: String? = nil,
+        reasoningEffort: Assistant.ReasoningEffort? = nil,
+        tools: [Assistant.Tool]? = nil,
+        metadata: [String : String]? = nil,
+        temperature: Double? = nil,
+        topP: Double? = nil,
+        responseFormat: ResponseFormat? = nil
+    ) async throws -> Assistant {
+
+        let request = try ModifyAssistantRequest(
+            assistantId: assistantID,
+            model: model?.id,
+            name: name,
+            instructions: instructions,
+            reasoningEffort: reasoningEffort,
+            tools: tools,
+            metadata: metadata,
+            temperature: temperature,
+            topP: topP,
+            responseFormat: responseFormat
+        )
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
+     Delete an assistant.
+     DELETE
+
+     https://api.openai.com/v1/assistants/<assistant_id>
+
+     Delete an assistant.
+     */
+    public func deleteAssistant(
+        assistantID: String
+    ) async throws -> DeletedResponse {
+        let request = DeleteAssistantRequest(assistantID: assistantID)
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
      Create a thread.
      POST
 
@@ -67,6 +120,22 @@ public struct AssistantProvider {
             messages: messages,
             metadata: metadata
         )
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
+     Delete a thread.
+     DELETE
+
+     https://api.openai.com/v1/threads/<thread_id>
+
+     Delete a thread.
+     */
+    public func deleteThread(
+        threadID: String
+    ) async throws -> DeletedResponse {
+        let request = DeleteThreadRequest(threadID: threadID)
 
         return try await requestHandler.perform(request: request)
     }
