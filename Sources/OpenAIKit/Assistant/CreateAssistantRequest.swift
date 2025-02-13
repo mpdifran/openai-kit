@@ -23,7 +23,7 @@ struct CreateAssistantRequest: Request {
         metadata: [String : String]?,
         temperature: Double?,
         topP: Double?,
-        responseFormat: ResponseFormat
+        responseFormat: ResponseFormat?
     ) throws {
         let body = Body(
             model: model,
@@ -51,6 +51,6 @@ extension CreateAssistantRequest {
         let metadata: [String : String]?
         let temperature: Double?
         let topP: Double?
-        let responseFormat: ResponseFormat
+        let responseFormat: ResponseFormat?
     }
 }

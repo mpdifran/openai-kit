@@ -32,7 +32,7 @@ public struct AssistantProvider {
         metadata: [String : String]? = nil,
         temperature: Double? = nil,
         topP: Double? = nil,
-        responseFormat: ResponseFormat = ResponseFormat(type: .auto)
+        responseFormat: ResponseFormat? = nil
     ) async throws -> Assistant {
 
         let request = try CreateAssistantRequest(
@@ -59,7 +59,7 @@ public struct AssistantProvider {
      Create a thread.
      */
     public func createThread(
-        messages: [Thread.Message],
+        messages: [Thread.Message] = [],
         metadata: [String : String]? = nil
     ) async throws -> Thread {
 

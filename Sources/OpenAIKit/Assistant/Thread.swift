@@ -16,6 +16,14 @@ public extension Thread {
     struct Message: Codable {
         public let role: Role
         public let content: [Content]
+
+        public init(
+            role: Role,
+            content: [Content]
+        ) {
+            self.role = role
+            self.content = content
+        }
     }
 }
 
