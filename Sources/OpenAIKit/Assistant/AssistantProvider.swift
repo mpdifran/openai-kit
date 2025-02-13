@@ -103,7 +103,7 @@ public struct AssistantProvider {
     public func listMessages(
         threadID: String,
         runID: String?
-    ) async throws -> [Message] {
+    ) async throws -> List<Message> {
         let request = ListMessagesRequest(
             threadID: threadID,
             runID: runID
@@ -218,11 +218,11 @@ public struct AssistantProvider {
             throw NSError(domain: "AssistantProvider", code: 1, userInfo: [NSLocalizedDescriptionKey: "Run failed"])
         }
 
-        let messages = try await listMessages(
+        let messagesList = try await listMessages(
             threadID: threadID,
             runID: runID
         )
 
-        return messages.last(where: { $0.role == .assistant })
+        return messagesList.data.last(where: { $0.role == .assistant })
     }
 }
