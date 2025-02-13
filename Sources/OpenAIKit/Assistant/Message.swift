@@ -12,7 +12,7 @@ public struct Message: Codable {
     public let threadId: String
     public let assistantId: String?
     public let runId: String?
-    public let status: Status
+    public let status: Status?
     public let incompleteDetails: IncompleteDetails?
     public let role: Role
     public let content: [Content]
