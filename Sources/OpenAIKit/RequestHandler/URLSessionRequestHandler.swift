@@ -23,8 +23,14 @@ struct URLSessionRequestHandler: RequestHandler {
         decoder.dateDecodingStrategy = request.dateDecodingStrategy
         do {
             return try decoder.decode(T.self, from: data)
-        } catch {
-            throw try decoder.decode(APIErrorResponse.self, from: data)
+        } catch let decodingError {
+            let apiError: APIErrorResponse
+            do {
+                apiError = try decoder.decode(APIErrorResponse.self, from: data)
+            } catch {
+                throw decodingError
+            }
+            throw apiError
         }
     }
     

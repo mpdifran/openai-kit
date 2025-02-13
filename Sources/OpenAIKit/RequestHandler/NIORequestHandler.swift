@@ -50,8 +50,14 @@ struct NIORequestHandler: RequestHandler {
 
         do {
             return try decoder.decode(T.self, from: byteBuffer)
-        } catch {
-            throw try decoder.decode(APIErrorResponse.self, from: byteBuffer)
+        } catch let decodingError {
+            let apiError: APIErrorResponse
+            do {
+                apiError = try decoder.decode(APIErrorResponse.self, from: byteBuffer)
+            } catch {
+                throw decodingError
+            }
+            throw apiError
         }
     }
     
