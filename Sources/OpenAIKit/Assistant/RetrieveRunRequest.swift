@@ -10,6 +10,7 @@ import NIOHTTP1
 import Foundation
 
 struct RetrieveRunRequest: Request {
+    let headers: HTTPHeaders = ["OpenAI-Beta" : "assistants=v2"]
     let method: HTTPMethod = .GET
     let path: String
     let body: Data?
