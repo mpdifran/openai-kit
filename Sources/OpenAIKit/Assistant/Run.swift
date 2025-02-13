@@ -21,8 +21,8 @@ public struct Run: Codable {
 public extension Run {
     enum Status: String, Codable {
         case queued
-        case inProgress = "in_progress"
-        case requiresAction = "requires_action"
+        case inProgress
+        case requiresAction
         case cancelling
         case cancelled
         case failed
@@ -55,9 +55,9 @@ public extension Run {
     }
 
     enum ErrorCode: String, Codable {
-        case serverError = "server_error"
-        case rateLimitExceeded = "rate_limit_exceeded"
-        case invalidPrompt = "invalid_prompt"
+        case serverError
+        case rateLimitExceeded
+        case invalidPrompt
     }
 
     struct IncompleteDetails: Codable {

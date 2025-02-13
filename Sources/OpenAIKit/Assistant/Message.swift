@@ -21,9 +21,9 @@ public struct Message: Codable {
 
 public extension Message {
     enum Status: String, Codable {
-        case inProgress = "in_progress"
-        case incomplete = "incomplete"
-        case completed = "completed"
+        case inProgress
+        case incomplete
+        case completed
     }
 
     enum Role: String, Codable {
@@ -83,11 +83,11 @@ extension Message.Content {
 extension Message {
     private enum CodingKeys: String, CodingKey {
         case id
-        case threadId = "thread_id"
-        case assistantId = "assistant_id"
-        case runId = "run_id"
+        case threadId
+        case assistantId
+        case runId
         case status
-        case incompleteDetails = "incomplete_details"
+        case incompleteDetails
         case role
         case content
         case metadata
@@ -96,8 +96,8 @@ extension Message {
     private enum ContentKeys: String, CodingKey {
         case type
         case text
-        case imageURL = "image_url"
-        case imageFile = "image_file"
+        case imageURL
+        case imageFile
         case refusal
     }
 
@@ -111,7 +111,7 @@ extension Message {
     }
 
     private enum ImageFileKeys: String, CodingKey {
-        case fileID = "file_id"
+        case fileId
         case detail
     }
 
@@ -153,7 +153,7 @@ extension Message {
             case "image_file":
                 let imageFileContainer = try contentContainer.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
 
-                if let fileID = try? imageFileContainer.decode(String.self, forKey: .fileID) {
+                if let fileID = try? imageFileContainer.decode(String.self, forKey: .fileId) {
                     let detail = try imageFileContainer.decodeIfPresent(ImageDetail.self, forKey: .detail) ?? .auto
 
                     contents.append(.imageFile(fileID, detail))
@@ -201,7 +201,7 @@ extension Message {
                 case .imageFile(let fileID, let detail):
                     try contentContainer.encode("image_file", forKey: .type)
                     var imageFileContainer = contentContainer.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
-                    try imageFileContainer.encode(fileID, forKey: .fileID)
+                    try imageFileContainer.encode(fileID, forKey: .fileId)
                     try imageFileContainer.encode(detail, forKey: .detail)
                 case .refusal(let refusal):
                     try contentContainer.encode("refusal", forKey: .type)

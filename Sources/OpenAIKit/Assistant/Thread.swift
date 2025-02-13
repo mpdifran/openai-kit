@@ -85,8 +85,8 @@ extension Thread.Message {
     private enum ContentKeys: String, CodingKey {
         case type
         case text
-        case imageURL = "image_url"
-        case imageFile = "image_file"
+        case imageURL
+        case imageFile
     }
 
     private enum ImageURLKeys: String, CodingKey {
@@ -95,7 +95,7 @@ extension Thread.Message {
     }
 
     private enum ImageFileKeys: String, CodingKey {
-        case fileID = "file_id"
+        case fileId
         case detail
     }
 
@@ -130,7 +130,7 @@ extension Thread.Message {
                 case "image_file":
                     let imageFileContainer = try contentContainer.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
 
-                    if let fileID = try? imageFileContainer.decode(String.self, forKey: .fileID) {
+                    if let fileID = try? imageFileContainer.decode(String.self, forKey: .fileId) {
                         let detail = try imageFileContainer.decodeIfPresent(ImageDetail.self, forKey: .detail) ?? .auto
 
                         contents.append(.imageFile(fileID, detail))
@@ -168,7 +168,7 @@ extension Thread.Message {
                 case .imageFile(let fileID, let detail):
                     try contentContainer.encode("image_file", forKey: .type)
                     var imageFileContainer = contentContainer.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
-                    try imageFileContainer.encode(fileID, forKey: .fileID)
+                    try imageFileContainer.encode(fileID, forKey: .fileId)
                     try imageFileContainer.encode(detail, forKey: .detail)
                 }
             }
