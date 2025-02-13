@@ -83,11 +83,11 @@ extension Message.Content {
 extension Message {
     private enum CodingKeys: String, CodingKey {
         case id
-        case threadId
-        case assistantId
-        case runId
+        case threadId = "thread_id"
+        case assistantId = "assistant_id"
+        case runId = "run_id"
         case status
-        case incompleteDetails
+        case incompleteDetails = "incomplete_details"
         case role
         case content
         case metadata
