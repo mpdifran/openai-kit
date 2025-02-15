@@ -88,6 +88,22 @@ public struct AssistantProvider {
     }
 
     /**
+     Retrieve an assistant.
+     GET
+
+     https://api.openai.com/v1/assistants/<assistant_id>
+
+     Retrieve an assistant.
+     */
+    public func retrieveAssistant(
+        assistantID: String
+    ) async throws -> Assistant {
+        let request = RetrieveAssistantRequest(assistantID: assistantID)
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
      Delete an assistant.
      DELETE
 
