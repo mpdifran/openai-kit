@@ -12,7 +12,7 @@ public struct Assistant: Codable {
     public let name: String?
     public let description: String?
     public let model: String
-    public let instructions: String
+    public let instructions: String?
     public let metadata: [String : String]
 }
 
