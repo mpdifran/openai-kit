@@ -94,10 +94,16 @@ public extension Assistant.Tool.Function {
     struct Parameter: Codable {
         public let type: ParameterType
         public let description: String
+        public let `enum`: [String]?
 
-        public init(type: ParameterType, description: String) {
+        public init(
+            type: ParameterType,
+            description: String,
+            enum: [String]? = nil
+        ) {
             self.type = type
             self.description = description
+            self.enum = `enum`
         }
     }
 

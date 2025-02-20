@@ -265,13 +265,13 @@ public struct AssistantProvider {
 
      - Throws: An error if the polling or message retrieval fails.
 
-     - Returns: The latest assistant message after the run completes.
+     - Returns: The latest assistant messages after the run completes, and the Run.
      */
     public func pollRunForAssistantResponse(
         threadID: String,
         runID: String,
         pollInterval: TimeInterval = 2
-    ) async throws -> Message? {
+    ) async throws -> (Run, [Message]) {
         var run: Run
         repeat {
             try await Task.sleep(nanoseconds: UInt64(pollInterval) * 1_000_000_000)
@@ -308,6 +308,15 @@ public struct AssistantProvider {
             runID: runID
         )
 
-        return messagesList.data.last(where: { $0.role == .assistant })
+        // Get only the last contiguous assistant messages
+        var latestAssistantMessages: [Message] = []
+        for message in messagesList.data.reversed() {
+            if message.role == .assistant {
+                latestAssistantMessages.insert(message, at: 0)
+            } else {
+                break
+            }
+        }
+        return (run, latestAssistantMessages)
     }
 }
