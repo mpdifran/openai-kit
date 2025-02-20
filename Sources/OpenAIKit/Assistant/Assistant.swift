@@ -112,3 +112,15 @@ public extension Assistant.Tool.Function {
         case number
     }
 }
+
+public extension Assistant.Tool.Function.Parameter {
+    init<T: RawRepresentable & CaseIterable>(
+        type: Assistant.Tool.Function.ParameterType,
+        description: String,
+        enum enumType: T.Type
+    ) where T.RawValue == String {
+        self.type = type
+        self.description = description
+        self.enum = enumType.allCases.map { $0.rawValue }
+    }
+}
