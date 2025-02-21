@@ -82,155 +82,108 @@ extension Message.Content {
     }
 }
 
-extension Message {
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case threadId
-        case assistantId
-        case runId
-        case status
-        case incompleteDetails
-        case role
-        case content
-        case metadata
-    }
+extension Message.Content {
 
-    private enum ContentKeys: String, CodingKey {
-        case id
-        case type
-        case text
-        case imageURL
-        case imageFile
-        case refusal
-        case function
-    }
+  private enum ContentKeys: String, CodingKey {
+      case id
+      case type
+      case text
+      case imageURL
+      case imageFile
+      case refusal
+      case function
+  }
 
-    private enum TextContentKeys: String, CodingKey {
-        case value
-    }
+  private enum TextContentKeys: String, CodingKey {
+      case value
+  }
 
-    private enum ImageURLKeys: String, CodingKey {
-        case url
-        case detail
-    }
+  private enum ImageURLKeys: String, CodingKey {
+      case url
+      case detail
+  }
 
-    private enum ImageFileKeys: String, CodingKey {
-        case fileId
-        case detail
-    }
+  private enum ImageFileKeys: String, CodingKey {
+      case fileId
+      case detail
+  }
 
-    private enum FunctionKeys: String, CodingKey {
-        case name
-        case arguments
-    }
+  private enum FunctionKeys: String, CodingKey {
+      case name
+      case arguments
+  }
 
     public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: ContentKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
 
-        id = try container.decode(String.self, forKey: .id)
-        threadId = try container.decode(String.self, forKey: .threadId)
-        assistantId = try container.decodeIfPresent(String.self, forKey: .assistantId)
-        runId = try container.decodeIfPresent(String.self, forKey: .runId)
-        status = try container.decodeIfPresent(Message.Status.self, forKey: .status)
-        incompleteDetails = try container.decodeIfPresent(IncompleteDetails.self, forKey: .incompleteDetails)
-        role = try container.decode(Message.Role.self, forKey: .role)
-        metadata = try container.decode([String : String].self, forKey: .metadata)
+        switch type {
+        case "text":
+            let textContainer = try container.nestedContainer(keyedBy: TextContentKeys.self, forKey: .text)
+            let text = try textContainer.decode(String.self, forKey: .value)
+            self = .text(text)
+        case "image_url":
+            let imageURLContainer = try container.nestedContainer(keyedBy: ImageURLKeys.self, forKey: .imageURL)
 
-        // Content
-        var contentsArray = try container.nestedUnkeyedContainer(forKey: .content)
-        var contents = [Content]()
+            if let url = try? imageURLContainer.decode(URL.self, forKey: .url) {
+                let detail = try imageURLContainer.decodeIfPresent(Message.ImageDetail.self, forKey: .detail) ?? .auto
 
-        while !contentsArray.isAtEnd {
-            let contentContainer = try contentsArray.nestedContainer(keyedBy: ContentKeys.self)
-            let id = try contentContainer.decode(String.self, forKey: .id)
-            let type = try contentContainer.decode(String.self, forKey: .type)
-
-            switch type {
-            case "text":
-                let textContainer = try contentContainer.nestedContainer(keyedBy: TextContentKeys.self, forKey: .text)
-                let text = try textContainer.decode(String.self, forKey: .value)
-                contents.append(.text(text))
-            case "image_url":
-                let imageURLContainer = try contentContainer.nestedContainer(keyedBy: ImageURLKeys.self, forKey: .imageURL)
-
-                if let url = try? imageURLContainer.decode(URL.self, forKey: .url) {
-                    let detail = try imageURLContainer.decodeIfPresent(ImageDetail.self, forKey: .detail) ?? .auto
-
-                    contents.append(.imageURL(url, detail))
-                } else {
-                    throw DecodingError.dataCorruptedError(forKey: .type, in: contentContainer, debugDescription: "Unknown image URL")
-                }
-            case "image_file":
-                let imageFileContainer = try contentContainer.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
-
-                if let fileID = try? imageFileContainer.decode(String.self, forKey: .fileId) {
-                    let detail = try imageFileContainer.decodeIfPresent(ImageDetail.self, forKey: .detail) ?? .auto
-
-                    contents.append(.imageFile(fileID, detail))
-                } else {
-                    throw DecodingError.dataCorruptedError(forKey: .type, in: contentContainer, debugDescription: "Unknown image file ID")
-                }
-            case "refusal":
-                let refusal = try contentContainer.decode(String.self, forKey: .refusal)
-                contents.append(.refusal(refusal))
-            case "function":
-                let functionContainer = try contentContainer.nestedContainer(keyedBy: FunctionKeys.self, forKey: .function)
-
-                let name = try functionContainer.decode(String.self, forKey: .name)
-                let arguments = try functionContainer.decode(String.self, forKey: .arguments)
-
-                contents.append(.functionCall(id, name, arguments))
-            default:
-                throw DecodingError.dataCorruptedError(forKey: .type, in: contentContainer, debugDescription: "Unknown content type: \(type)")
+                self = .imageURL(url, detail)
+            } else {
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unknown image URL")
             }
-        }
+        case "image_file":
+            let imageFileContainer = try container.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
 
-        content = contents
+            if let fileID = try? imageFileContainer.decode(String.self, forKey: .fileId) {
+                let detail = try imageFileContainer.decodeIfPresent(Message.ImageDetail.self, forKey: .detail) ?? .auto
+
+                self = .imageFile(fileID, detail)
+            } else {
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unknown image file ID")
+            }
+        case "refusal":
+            let refusal = try container.decode(String.self, forKey: .refusal)
+            self = .refusal(refusal)
+        case "function":
+            let functionContainer = try container.nestedContainer(keyedBy: FunctionKeys.self, forKey: .function)
+
+            let id = try container.decode(String.self, forKey: .id)
+            let name = try functionContainer.decode(String.self, forKey: .name)
+            let arguments = try functionContainer.decode(String.self, forKey: .arguments)
+
+            self = .functionCall(id, name, arguments)
+        default:
+            throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unknown content type: \(type)")
+        }
     }
 
     public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: ContentKeys.self)
 
-        try container.encode(id, forKey: .id)
-        try container.encode(threadId, forKey: .threadId)
-        try container.encodeIfPresent(assistantId, forKey: .assistantId)
-        try container.encodeIfPresent(runId, forKey: .runId)
-        try container.encodeIfPresent(status, forKey: .status)
-        try container.encodeIfPresent(incompleteDetails, forKey: .incompleteDetails)
-        try container.encode(role, forKey: .role)
-        try container.encode(metadata, forKey: .metadata)
-
-        if content.count == 1, let text = content.first?.text {
-            try container.encode(text, forKey: .content)
-        } else {
-            var contentsArray = container.nestedUnkeyedContainer(forKey: .content)
-            for contentItem in content {
-                var contentContainer = contentsArray.nestedContainer(keyedBy: ContentKeys.self)
-                switch contentItem {
-                case .text(let text):
-                    var textContentContainer = contentContainer.nestedContainer(keyedBy: TextContentKeys.self, forKey: .text)
-                    try textContentContainer.encode(text, forKey: .value)
-                case .imageURL(let url, let detail):
-                    try contentContainer.encode("image_url", forKey: .type)
-                    var urlContainer = contentContainer.nestedContainer(keyedBy: ImageURLKeys.self, forKey: .imageURL)
-                    try urlContainer.encode(url, forKey: .url)
-                    try urlContainer.encode(detail, forKey: .detail)
-                case .imageFile(let fileID, let detail):
-                    try contentContainer.encode("image_file", forKey: .type)
-                    var imageFileContainer = contentContainer.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
-                    try imageFileContainer.encode(fileID, forKey: .fileId)
-                    try imageFileContainer.encode(detail, forKey: .detail)
-                case .refusal(let refusal):
-                    try contentContainer.encode("refusal", forKey: .type)
-                    try contentContainer.encode(refusal, forKey: .refusal)
-                case .functionCall(let id, let name, let arguments):
-                    try contentContainer.encode(id, forKey: .id)
-                    try contentContainer.encode("function", forKey: .type)
-                    var functionContainer = contentContainer.nestedContainer(keyedBy: FunctionKeys.self, forKey: .function)
-                    try functionContainer.encode(name, forKey: .name)
-                    try functionContainer.encode(arguments, forKey: .arguments)
-                }
-            }
+        switch self {
+        case .text(let text):
+            var textContentContainer = container.nestedContainer(keyedBy: TextContentKeys.self, forKey: .text)
+            try textContentContainer.encode(text, forKey: .value)
+        case .imageURL(let url, let detail):
+            try container.encode("image_url", forKey: .type)
+            var urlContainer = container.nestedContainer(keyedBy: ImageURLKeys.self, forKey: .imageURL)
+            try urlContainer.encode(url, forKey: .url)
+            try urlContainer.encode(detail, forKey: .detail)
+        case .imageFile(let fileID, let detail):
+            try container.encode("image_file", forKey: .type)
+            var imageFileContainer = container.nestedContainer(keyedBy: ImageFileKeys.self, forKey: .imageFile)
+            try imageFileContainer.encode(fileID, forKey: .fileId)
+            try imageFileContainer.encode(detail, forKey: .detail)
+        case .refusal(let refusal):
+            try container.encode("refusal", forKey: .type)
+            try container.encode(refusal, forKey: .refusal)
+        case .functionCall(let id, let name, let arguments):
+            try container.encode(id, forKey: .id)
+            try container.encode("function", forKey: .type)
+            var functionContainer = container.nestedContainer(keyedBy: FunctionKeys.self, forKey: .function)
+            try functionContainer.encode(name, forKey: .name)
+            try functionContainer.encode(arguments, forKey: .arguments)
         }
     }
 }
