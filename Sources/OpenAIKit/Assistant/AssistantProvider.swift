@@ -269,58 +269,89 @@ public struct AssistantProvider {
 
      - Throws: An error if the polling or message retrieval fails.
 
-     - Returns: The latest assistant messages after the run completes, and the Run.
+     - Returns: The latest assistant messages after the run completes, any tool calls, and the Run.
      */
     public func pollRunForAssistantResponse(
         threadID: String,
         runID: String,
         pollInterval: TimeInterval = 2
-    ) async throws -> (Run, [Message]) {
+    ) async throws -> PollRunResponse {
         var run: Run
         repeat {
             try await Task.sleep(nanoseconds: UInt64(pollInterval) * 1_000_000_000)
             run = try await retrieveRun(threadID: threadID, runID: runID)
-        } while run.status != .completed && run.status != .failed
+        } while run.status == .queued || run.status == .inProgress || run.status == .cancelling
 
-        guard run.status == .completed else {
-            switch run.status {
-            case .incomplete:
-                if let incompleteDetails = run.incompleteDetails {
-                    throw NSError(
-                        domain: "AssistantProvider",
-                        code: 1,
-                        userInfo: [NSLocalizedDescriptionKey: "Run incomplete: \(incompleteDetails)"]
-                    )
+        switch run.status {
+        case .completed:
+            let messagesList = try await listMessages(
+                threadID: threadID,
+                runID: runID
+            )
+            // Get only the last contiguous assistant messages
+            var latestAssistantMessages: [Message] = []
+            for message in messagesList.data.reversed() {
+                if message.role == .assistant {
+                    latestAssistantMessages.insert(message, at: 0)
+                } else {
+                    break
                 }
-            case .failed:
-                if let lastError = run.lastError {
-                    throw NSError(
-                        domain: "AssistantProvider",
-                        code: 1,
-                        userInfo: [NSLocalizedDescriptionKey: "Run Failed [Code \(lastError.code.rawValue)]: \(lastError.message)"]
-                    )
-                }
-            default:
-                break
             }
-
-            throw NSError(domain: "AssistantProvider", code: 1, userInfo: [NSLocalizedDescriptionKey: "Run failed"])
-        }
-
-        let messagesList = try await listMessages(
-            threadID: threadID,
-            runID: runID
-        )
-
-        // Get only the last contiguous assistant messages
-        var latestAssistantMessages: [Message] = []
-        for message in messagesList.data.reversed() {
-            if message.role == .assistant {
-                latestAssistantMessages.insert(message, at: 0)
-            } else {
-                break
+            return .messages(run, latestAssistantMessages)
+        case .requiresAction:
+            guard let toolCalls = run.requiredAction?.submitToolOutputs.toolCalls else {
+                throw RunError.missingToolCalls()
             }
+            return .requiresAction(run, toolCalls)
+        case .incomplete:
+            throw RunError.incomplete(run.incompleteDetails)
+        case .failed:
+            throw RunError.failed(run.lastError)
+        case .cancelled:
+            throw RunError.cancelled()
+        case .expired:
+            throw RunError.expired()
+        case .queued, .inProgress, .cancelling:
+            throw RunError.invalidState()
         }
-        return (run, latestAssistantMessages)
+    }
+}
+
+public enum PollRunResponse {
+    case messages(Run, [Message])
+    case requiresAction(Run, [Run.ToolCall])
+}
+
+// MARK: - RunError
+
+public struct RunError: LocalizedError {
+    public let errorDescription: String?
+    public let failureReason: String?
+}
+
+extension RunError {
+    static func failed(_ lastError: Run.LastError?) -> RunError {
+        let message = lastError.map { "[Error Code \($0.code)] \($0.message)" } ?? "Run failed."
+        return RunError(errorDescription: message, failureReason: "Run failed.")
+    }
+
+    static func incomplete(_ incompleteDetails: Run.IncompleteDetails?) -> RunError {
+        RunError(errorDescription: incompleteDetails?.reason ?? "Run incomplete.", failureReason: "Run incomplete.")
+    }
+
+    static func cancelled() -> RunError {
+        RunError(errorDescription: "Run cancelled.", failureReason: "Run cancelled.")
+    }
+
+    static func expired() -> RunError {
+        RunError(errorDescription: "Run expired.", failureReason: "Run expired.")
+    }
+
+    static func invalidState() -> RunError {
+        RunError(errorDescription: "Run is in an invalid state.", failureReason: "Run is in an invalid state.")
+    }
+
+    static func missingToolCalls() -> RunError {
+        RunError(errorDescription: "Run requires tool calls but none were returned.", failureReason: "Run requires tool calls but none were returned.")
     }
 }
