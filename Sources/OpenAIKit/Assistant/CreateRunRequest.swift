@@ -18,12 +18,14 @@ struct CreateRunRequest: Request {
     init(
         threadID: String,
         assistantID: String,
+        tools: [Assistant.Tool]?,
         toolChoice: Run.ToolChoice?
     ) throws {
         self.path = "/v1/threads/\(threadID)/runs"
 
         let body = Body(
             assistantId: assistantID,
+            tools: tools,
             toolChoice: toolChoice
         )
 
@@ -34,6 +36,7 @@ struct CreateRunRequest: Request {
 extension CreateRunRequest {
     struct Body: Encodable {
         let assistantId: String
+        let tools: [Assistant.Tool]?
         let toolChoice: Run.ToolChoice?
     }
 }
