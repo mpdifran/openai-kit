@@ -206,11 +206,13 @@ public struct AssistantProvider {
      */
     public func createRun(
         assistantID: String,
-        threadID: String
+        threadID: String,
+        toolChoice: Run.ToolChoice? = nil
     ) async throws -> Run {
         let request = try CreateRunRequest(
             threadID: threadID,
-            assistantID: assistantID
+            assistantID: assistantID,
+            toolChoice: toolChoice
         )
 
         return try await requestHandler.perform(request: request)

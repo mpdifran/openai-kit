@@ -17,11 +17,15 @@ struct CreateRunRequest: Request {
 
     init(
         threadID: String,
-        assistantID: String
+        assistantID: String,
+        toolChoice: Run.ToolChoice?
     ) throws {
         self.path = "/v1/threads/\(threadID)/runs"
 
-        let body = Body(assistantId: assistantID)
+        let body = Body(
+            assistantId: assistantID,
+            toolChoice: toolChoice
+        )
 
         self.body = try Self.encoder.encode(body)
     }
@@ -30,5 +34,6 @@ struct CreateRunRequest: Request {
 extension CreateRunRequest {
     struct Body: Encodable {
         let assistantId: String
+        let toolChoice: Run.ToolChoice?
     }
 }
