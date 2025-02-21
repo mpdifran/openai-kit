@@ -207,11 +207,13 @@ public struct AssistantProvider {
     public func createRun(
         assistantID: String,
         threadID: String,
+        tools: [Assistant.Tool]? = nil,
         toolChoice: Run.ToolChoice? = nil
     ) async throws -> Run {
         let request = try CreateRunRequest(
             threadID: threadID,
             assistantID: assistantID,
+            tools: tools,
             toolChoice: toolChoice
         )
 
