@@ -238,6 +238,22 @@ public struct AssistantProvider {
     }
 
     /**
+     POST
+
+     https://api.openai.com/v1/threads/<thread_id>/runs/<run_id>/cancel
+
+     Cancel a run.
+     */
+    public func cancelRun(
+        threadID: String,
+        runID: String
+    ) async throws -> Run {
+        let request = CancelRunRequest(threadID: threadID, runID: runID)
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
      Submit tool outputs.
      POST
 
