@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Assistant: Codable {
+public struct Assistant: Codable, Equatable {
     public let id: String
     public let name: String?
     public let description: String?
@@ -26,7 +26,7 @@ public extension Assistant {
         case high
     }
 
-    struct Tool: Codable {
+    struct Tool: Codable, Equatable {
         public let type: ToolType
         public let function: Function?
 
@@ -40,7 +40,7 @@ public extension Assistant {
         }
     }
 
-    enum ToolType: String, Codable {
+    enum ToolType: String, Codable, Equatable {
         case codeInterpreter = "code_interpreter"
 //        case fileSearch = "file_search"
         case function
@@ -48,7 +48,7 @@ public extension Assistant {
 }
 
 public extension Assistant.Tool {
-    struct Function: Codable {
+    struct Function: Codable, Equatable {
         public let name: String
         public let description: String?
         public let parameters: Parameters?
@@ -69,7 +69,7 @@ public extension Assistant.Tool {
 }
 
 public extension Assistant.Tool.Function {
-    struct Parameters: Codable {
+    struct Parameters: Codable, Equatable {
         public let type: ParametersType
         public let properties: [String : Parameter]
         public let required: [String]
@@ -88,11 +88,11 @@ public extension Assistant.Tool.Function {
         }
     }
 
-    enum ParametersType: String, Codable {
+    enum ParametersType: String, Codable, Equatable {
         case object
     }
 
-    struct Parameter: Codable {
+    struct Parameter: Codable, Equatable {
         public let type: ParameterType
         public let description: String
         public let `enum`: [String]?
@@ -108,7 +108,7 @@ public extension Assistant.Tool.Function {
         }
     }
 
-    enum ParameterType: String, Codable {
+    enum ParameterType: String, Codable, Equatable {
         case string
         case number
     }
