@@ -221,6 +221,21 @@ public struct AssistantProvider {
     }
 
     /**
+     List runs.
+
+     https://api.openai.com/v1/threads/{thread_id}/runs
+
+     Returns a list of runs belonging to a thread.
+     */
+    public func listRuns(
+        threadID: String
+    ) async throws -> List<Run> {
+        let request = ListRunsRequest(threadID: threadID)
+
+        return try await requestHandler.perform(request: request)
+    }
+
+    /**
      Retrieve a run.
      GET
 
