@@ -15,6 +15,7 @@ public struct Assistant: Codable {
     public let instructions: String?
     public let temperature: Double?
     public let topP: Double?
+    public let tools: [Tool]
     public let metadata: [String : String]
 }
 
