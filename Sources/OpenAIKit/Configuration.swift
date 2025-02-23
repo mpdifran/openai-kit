@@ -3,7 +3,7 @@ import NIOHTTP1
 public struct Configuration {
     public let apiKey: String
     public let organization: String?
-    public let api: API?
+    public let api: API
     
     var headers: HTTPHeaders {
         var headers = HTTPHeaders()
@@ -19,7 +19,7 @@ public struct Configuration {
     public init(
         apiKey: String,
         organization: String? = nil,
-        api: API? = nil
+        api: API = .standardOpenAI
     ) {
         self.apiKey = apiKey
         self.organization = organization

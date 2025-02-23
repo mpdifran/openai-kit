@@ -4,8 +4,8 @@ import Foundation
 
 protocol Request {
     var method: HTTPMethod { get }
-    var scheme: API.Scheme { get }
-    var host: String { get }
+    var scheme: API.Scheme? { get }
+    var host: String? { get }
     var path: String { get }
     var queryItems: [URLQueryItem]? { get }
     var body: Data? { get }
@@ -17,8 +17,8 @@ protocol Request {
 extension Request {
     static var encoder: JSONEncoder { .requestEncoder }
 
-    var scheme: API.Scheme { .https }
-    var host: String { "api.openai.com/v1" }
+    var scheme: API.Scheme? { nil }
+    var host: String? { nil }
     var body: Data? { nil }
 
     var queryItems: [URLQueryItem]? { nil }

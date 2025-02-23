@@ -34,3 +34,11 @@ extension API {
         }
     }
 }
+
+public extension API {
+  static let standardOpenAI = API(
+    scheme: .https,
+    host: "api.openai.com",
+    pathPrefix: "/v1"
+  )
+}
