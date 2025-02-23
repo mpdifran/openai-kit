@@ -17,14 +17,14 @@ public struct ChatProvider {
     public func create(
         model: ModelID,
         messages: [Chat.Message] = [],
-        temperature: Double = 1.0,
-        topP: Double = 1.0,
-        n: Int = 1,
-        stops: [String] = [],
-        maxTokens: Int? = nil,
-        presencePenalty: Double = 0.0,
-        frequencyPenalty: Double = 0.0,
-        logitBias: [String : Int] = [:],
+        temperature: Double? = nil,
+        topP: Double? = nil,
+        n: Int? = nil,
+        stops: [String]? = nil,
+        maxCompletionTokens: Int? = nil,
+        presencePenalty: Double? = nil,
+        frequencyPenalty: Double? = nil,
+        logitBias: [String : Int]? = nil,
         user: String? = nil,
         responseFormat: ResponseFormat? = nil
     ) async throws -> Chat {
@@ -37,7 +37,7 @@ public struct ChatProvider {
             n: n,
             stream: false,
             stops: stops,
-            maxTokens: maxTokens,
+            maxCompletionTokens: maxCompletionTokens,
             presencePenalty: presencePenalty,
             frequencyPenalty: frequencyPenalty,
             logitBias: logitBias,
@@ -46,7 +46,6 @@ public struct ChatProvider {
         )
     
         return try await requestHandler.perform(request: request)
-
     }
     
     /**
@@ -65,14 +64,14 @@ public struct ChatProvider {
     public func stream(
         model: ModelID,
         messages: [Chat.Message] = [],
-        temperature: Double = 1.0,
-        topP: Double = 1.0,
-        n: Int = 1,
-        stops: [String] = [],
-        maxTokens: Int? = nil,
-        presencePenalty: Double = 0.0,
-        frequencyPenalty: Double = 0.0,
-        logitBias: [String : Int] = [:],
+        temperature: Double? = nil,
+        topP: Double? = nil,
+        n: Int? = nil,
+        stops: [String]? = nil,
+        maxCompletionTokens: Int? = nil,
+        presencePenalty: Double? = nil,
+        frequencyPenalty: Double? = nil,
+        logitBias: [String : Int]? = nil,
         user: String? = nil,
         responseFormat: ResponseFormat? = nil
     ) async throws -> AsyncThrowingStream<ChatStream, Error> {
@@ -85,7 +84,7 @@ public struct ChatProvider {
             n: n,
             stream: true,
             stops: stops,
-            maxTokens: maxTokens,
+            maxCompletionTokens: maxCompletionTokens,
             presencePenalty: presencePenalty,
             frequencyPenalty: frequencyPenalty,
             logitBias: logitBias,
