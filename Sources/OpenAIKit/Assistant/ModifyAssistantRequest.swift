@@ -28,7 +28,7 @@ struct ModifyAssistantRequest: Request {
         responseFormat: ResponseFormat?
     ) throws {
 
-        self.path = "/v1/assistants/\(assistantId)"
+        self.path = "/assistants/\(assistantId)"
 
         let body = Body(
             model: model,

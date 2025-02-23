@@ -6,7 +6,7 @@ struct RetrieveFileContentRequest: Request {
     let path: String
     
     init(id: String) {
-        self.path = "/v1/files/\(id)/content"
+        self.path = "/files/\(id)/content"
     }
 }
 

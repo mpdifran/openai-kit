@@ -6,7 +6,7 @@ struct DeleteFileRequest: Request {
     let path: String
     
     init(id: String) {
-        self.path = "/v1/files/\(id)"
+        self.path = "/files/\(id)"
     }
 }
 

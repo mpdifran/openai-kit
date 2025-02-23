@@ -4,7 +4,7 @@ import Foundation
 
 struct CreateChatRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/chat/completions"
+    let path = "/chat/completions"
     let body: Data?
     
     init(

@@ -18,6 +18,6 @@ struct CancelRunRequest: Request {
     threadID: String,
     runID: String
   ) {
-    self.path = "/v1/threads/\(threadID)/runs/\(runID)/cancel"
+    self.path = "/threads/\(threadID)/runs/\(runID)/cancel"
   }
 }

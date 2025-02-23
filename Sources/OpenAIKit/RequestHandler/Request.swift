@@ -18,7 +18,7 @@ extension Request {
     static var encoder: JSONEncoder { .requestEncoder }
 
     var scheme: API.Scheme { .https }
-    var host: String { "api.openai.com" }
+    var host: String { "api.openai.com/v1" }
     var body: Data? { nil }
 
     var queryItems: [URLQueryItem]? { nil }

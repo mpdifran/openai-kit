@@ -20,7 +20,7 @@ struct SubmitToolOutputsToRunRequest: Request {
         runID: String,
         toolOutputs: [ToolOutput]
     ) throws {
-        self.path = "/v1/threads/\(threadID)/runs/\(runID)/submit_tool_outputs"
+        self.path = "/threads/\(threadID)/runs/\(runID)/submit_tool_outputs"
 
         let body = Body(toolOutputs: toolOutputs)
 

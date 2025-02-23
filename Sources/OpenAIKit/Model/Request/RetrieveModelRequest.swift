@@ -6,7 +6,7 @@ struct RetrieveModelRequest: Request {
     let path: String
     
     init(id: String) {
-        self.path = "/v1/models/\(id)"
+        self.path = "/models/\(id)"
     }
 }
 

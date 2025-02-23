@@ -12,7 +12,7 @@ import Foundation
 struct CreateThreadRequest: Request {
     let headers: HTTPHeaders = ["OpenAI-Beta" : "assistants=v2"]
     let method: HTTPMethod = .POST
-    let path = "/v1/threads"
+    let path = "/threads"
     let body: Data?
 
     init(

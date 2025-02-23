@@ -4,7 +4,7 @@ import Foundation
 
 struct CreateEmbeddingRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/embeddings"
+    let path = "/embeddings"
     let body: Data?
     
     init(

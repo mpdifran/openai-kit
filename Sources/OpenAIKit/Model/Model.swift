@@ -77,6 +77,12 @@ extension Model {
     public enum Whisper: String, ModelID {
         case whisper1 = "whisper-1"
     }
+
+    public enum Gemini: String, ModelID {
+        case flash2_0 = "gemini-2.0-flash"
+        case flash1_5 = "gemini-1.5-flash"
+        case pro1_5 = "gemini-1.5-pro"
+    }
 }
 
 extension RawRepresentable where RawValue == String {

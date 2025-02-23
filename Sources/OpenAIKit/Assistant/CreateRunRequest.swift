@@ -21,7 +21,7 @@ struct CreateRunRequest: Request {
         tools: [Assistant.Tool]?,
         toolChoice: Run.ToolChoice?
     ) throws {
-        self.path = "/v1/threads/\(threadID)/runs"
+        self.path = "/threads/\(threadID)/runs"
 
         let body = Body(
             assistantId: assistantID,

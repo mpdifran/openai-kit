@@ -17,6 +17,6 @@ struct ListRunsRequest: Request {
   init(
     threadID: String
   ) {
-    self.path = "/v1/threads/\(threadID)/runs"
+    self.path = "/threads/\(threadID)/runs"
   }
 }

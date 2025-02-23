@@ -12,7 +12,7 @@ import Foundation
 struct CreateAssistantRequest: Request {
     let headers: HTTPHeaders = ["OpenAI-Beta" : "assistants=v2"]
     let method: HTTPMethod = .POST
-    let path = "/v1/assistants"
+    let path = "/assistants"
     let body: Data?
 
     init(

@@ -4,7 +4,7 @@ import AsyncHTTPClient
 
 struct UploadFileRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/files"
+    let path = "/files"
     let body: Data?
     private let boundary = UUID().uuidString
     

@@ -11,7 +11,7 @@ import AsyncHTTPClient
 
 struct CreateTranscriptionRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/audio/transcriptions"
+    let path = "/audio/transcriptions"
     let body: Data?
     private let boundary = UUID().uuidString
     

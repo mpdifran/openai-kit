@@ -26,7 +26,7 @@ struct ListMessagesRequest: Request {
             queryItems = nil
         }
 
-        self.path = "/v1/threads/\(threadID)/messages"
+        self.path = "/threads/\(threadID)/messages"
         self.body = nil
     }
 }

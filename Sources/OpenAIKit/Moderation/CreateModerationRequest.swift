@@ -4,7 +4,7 @@ import Foundation
 
 struct CreateModerationRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/moderations"
+    let path = "/moderations"
     let body: Data?
     
     init(

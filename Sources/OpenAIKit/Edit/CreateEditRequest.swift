@@ -4,7 +4,7 @@ import Foundation
 
 struct CreateEditRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/edits"
+    let path = "/edits"
     let body: Data?
     
     init(

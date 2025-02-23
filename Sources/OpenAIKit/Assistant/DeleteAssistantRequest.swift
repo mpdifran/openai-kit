@@ -15,6 +15,6 @@ struct DeleteAssistantRequest: Request {
     let path: String
 
     init(assistantID: String) {
-        self.path = "/v1/assistants/\(assistantID)"
+        self.path = "/assistants/\(assistantID)"
     }
 }

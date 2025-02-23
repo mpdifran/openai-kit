@@ -15,6 +15,6 @@ struct DeleteThreadRequest: Request {
     let path: String
 
     init(threadID: String) {
-        self.path = "/v1/threads/\(threadID)"
+        self.path = "/threads/\(threadID)"
     }
 }

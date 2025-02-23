@@ -4,7 +4,7 @@ import Foundation
 
 struct CreateImageVariationRequest: Request {
     let method: HTTPMethod = .POST
-    let path = "/v1/images/variations"
+    let path = "/images/variations"
     let body: Data?
     private let boundary = UUID().uuidString
     

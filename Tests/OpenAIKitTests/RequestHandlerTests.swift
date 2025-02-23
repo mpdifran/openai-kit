@@ -29,7 +29,7 @@ final class RequestHandlerTests: XCTestCase {
         let request = TestRequest(
             scheme: .custom("openai"),
             host: "chatgpt.is.cool",
-            path: "/v1/i-know"
+            path: "/i-know"
         )
         
         let url = try requestHandler(configuration: configuration).generateURL(for: request)
@@ -44,7 +44,7 @@ final class RequestHandlerTests: XCTestCase {
         let request = TestRequest(
             scheme: .https,
             host: "some-host",
-            path: "/v1/test"
+            path: "/test"
         )
         
         let url = try requestHandler(configuration: configuration).generateURL(for: request)
