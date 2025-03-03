@@ -6,10 +6,11 @@
 //
 
 public extension ResponseFormat {
-    enum `Type`: String, Codable {
-        case auto = "auto"
-        case text = "text"
-        case jsonObject = "json_object"
+    enum `Type`: Codable {
+        case auto
+        case text
+        case jsonObject
+        case jsonSchema(ResponseSchema)
     }
 }
 
@@ -21,35 +22,49 @@ public struct ResponseFormat: Codable {
     }
 
     public init(from decoder: Decoder) throws {
-        if let container = try? decoder.singleValueContainer(),
-           let value = try? container.decode(String.self),
-           let type = Type(rawValue: value) {
-            self.type = type
-            return
-        }
+        if
+            let singleValueContainer = try? decoder.singleValueContainer(),
+            let type = try? singleValueContainer.decode(String.self)
+        {
+            self.type = .auto
+        } else {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let typeString = try container.decode(String.self, forKey: .type)
 
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let value = try container.decode(String.self, forKey: .type)
-        guard let type = Type(rawValue: value) else {
-            throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid response format type.")
+            switch typeString {
+            case "auto":
+                self.type = .auto
+            case "text":
+                self.type = .text
+            case "json_object":
+                self.type = .jsonObject
+            case "json_schema":
+                let schema = try container.decode(ResponseSchema.self, forKey: .jsonSchema)
+                self.type = .jsonSchema(schema)
+            default:
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid response format type.")
+            }
         }
-
-        self.type = type
     }
 
     public func encode(to encoder: Encoder) throws {
-        // We need a custom encoder / decoder because this API is a mess.
-        switch type {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self.type {
         case .auto:
             var container = encoder.singleValueContainer()
-            try container.encode(type.rawValue)
-        case .text, .jsonObject:
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(type.rawValue, forKey: .type)
+            try container.encode("auto")
+        case .text:
+            try container.encode("text", forKey: .type)
+        case .jsonObject:
+            try container.encode("json_object", forKey: .type)
+        case .jsonSchema(let schema):
+            try container.encode("json_schema", forKey: .type)
+            try container.encode(schema, forKey: .jsonSchema)
         }
     }
 
     enum CodingKeys: String, CodingKey {
         case type
+        case jsonSchema
     }
 }
