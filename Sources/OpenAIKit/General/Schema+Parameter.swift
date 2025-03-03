@@ -10,13 +10,23 @@ public extension Schema {
         public let type: ParameterType
         public let description: String
         public let `enum`: [String]?
-        public let items: [Object]?
+        public let items: Object?
+
+        public init(
+            description: String,
+            arrayOf items: Schema.Object
+        ) {
+            self.type = .array
+            self.description = description
+            self.enum = nil
+            self.items = items
+        }
 
         public init(
             type: ParameterType,
             description: String,
             enum: [String]? = nil,
-            items: [Object]? = nil
+            items: Object? = nil
         ) {
             self.type = type
             self.description = description
