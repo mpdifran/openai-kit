@@ -7,10 +7,11 @@
 
 public extension Schema {
     struct Parameter: Codable, Equatable {
-        public let type: ParameterType
-        public let description: String
+        public let type: ParameterType?
+        public let description: String?
         public let `enum`: [String]?
         public let items: Object?
+        public let ref: String?
 
         public init(
             description: String,
@@ -20,6 +21,7 @@ public extension Schema {
             self.description = description
             self.enum = nil
             self.items = items
+            self.ref = nil
         }
 
         public init(
@@ -30,6 +32,18 @@ public extension Schema {
             self.description = description
             self.enum = nil
             self.items = items
+            self.ref = nil
+        }
+
+        /// Pass the name of the reference defined in ``Schema.Object.references``. The correct formatting will be applied.
+        public init(
+            ref: String
+        ) {
+            self.ref = "#/$defs/\(ref)"
+            self.type = nil
+            self.description = nil
+            self.enum = nil
+            self.items = nil
         }
 
         public init(
@@ -42,6 +56,47 @@ public extension Schema {
             self.description = description
             self.enum = `enum`
             self.items = items
+            self.ref = nil
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            if let ref = try? container.decode(String.self, forKey: .ref) {
+                self.ref = ref
+                self.type = nil
+                self.description = nil
+                self.enum = nil
+                self.items = nil
+            } else {
+                // If it's not a ref, type should be there.
+                self.type = try container.decode(ParameterType.self, forKey: .type)
+                self.description = try container.decodeIfPresent(String.self, forKey: .description)
+                self.enum = try container.decodeIfPresent([String].self, forKey: .enum)
+                self.items = try container.decodeIfPresent(Object.self, forKey: .items)
+                self.ref = nil
+            }
+        }
+
+        public func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+
+            if let ref {
+                try container.encode(ref, forKey: .ref)
+            } else {
+                try container.encode(type, forKey: .type)
+                try container.encodeIfPresent(description, forKey: .description)
+                try container.encodeIfPresent(`enum`, forKey: .enum)
+                try container.encodeIfPresent(items, forKey: .items)
+            }
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case type
+            case description
+            case `enum`
+            case items
+            case ref = "$ref"
         }
     }
 
@@ -119,6 +174,7 @@ public extension Schema.Parameter {
         self.description = description
         self.enum = enumType.allCases.map { $0.rawValue }
         self.items = nil
+        self.ref = nil
     }
 
     init<T: RawRepresentable & CaseIterable>(
@@ -129,5 +185,6 @@ public extension Schema.Parameter {
         self.description = description
         self.enum = enumType.allCases.map { $0.rawValue }
         self.items = nil
+        self.ref = nil
     }
 }
