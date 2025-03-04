@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AudioProvider {
+public struct AudioProvider: Sendable {
 
     private let requestHandler: RequestHandler
 

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -14,10 +14,10 @@ let package = Package(
         .library(
             name: "OpenAIKit",
             targets: ["OpenAIKit"]
-        ),
+        )
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.13.0"),
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.13.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -25,8 +25,9 @@ let package = Package(
         .target(
             name: "OpenAIKit",
             dependencies: [
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-            ]
+                .product(name: "AsyncHTTPClient", package: "async-http-client")
+            ],
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
         .testTarget(
             name: "OpenAIKitTests",
@@ -36,7 +37,8 @@ let package = Package(
                 .copy("Resources/example.jsonl"),
                 .copy("Resources/9000.mp3"),
                 .copy("Resources/cena.mp3"),
-            ]
+            ],
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
     ]
 )

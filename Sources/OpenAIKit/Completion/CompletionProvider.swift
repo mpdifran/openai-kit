@@ -1,15 +1,15 @@
-public struct CompletionProvider {
-    
+public struct CompletionProvider: Sendable {
+
     private let requestHandler: RequestHandler
-    
+
     init(requestHandler: RequestHandler) {
         self.requestHandler = requestHandler
     }
-    
+
     /**
      Create completion
      POST
-      
+
      https://api.openai.com/v1/completions
 
      Creates a completion for the provided prompt and parameters
@@ -29,10 +29,10 @@ public struct CompletionProvider {
         presencePenalty: Double = 0.0,
         frequencyPenalty: Double = 0.0,
         bestOf: Int = 1,
-        logitBias: [String : Int] = [:],
+        logitBias: [String: Int] = [:],
         user: String? = nil
     ) async throws -> Completion {
-        
+
         let request = try CreateCompletionRequest(
             model: model.id,
             prompts: prompts,
@@ -51,8 +51,8 @@ public struct CompletionProvider {
             logitBias: logitBias,
             user: user
         )
-        
+
         return try await requestHandler.perform(request: request)
-        
+
     }
 }

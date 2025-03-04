@@ -1,7 +1,7 @@
 import Foundation
 
 
-protocol RequestHandler {
+protocol RequestHandler: Sendable {
     var configuration: Configuration { get }
     func perform<T: Decodable>(request: Request) async throws -> T
     func stream<T: Decodable>(request: Request) async throws -> AsyncThrowingStream<T, Error>

@@ -1,10 +1,10 @@
 import Foundation
 
-public struct API {
+public struct API: Sendable {
     public let scheme: Scheme
     public let host: String
     public let path: String?
-    
+
     public init(
         scheme: API.Scheme,
         host: String,
@@ -17,11 +17,11 @@ public struct API {
 }
 
 extension API {
-    public enum Scheme {
+    public enum Scheme: Sendable {
         case http
         case https
         case custom(String)
-        
+
         var value: String {
             switch self {
             case .http:
@@ -35,10 +35,10 @@ extension API {
     }
 }
 
-public extension API {
-  static let standardOpenAI = API(
-    scheme: .https,
-    host: "api.openai.com",
-    pathPrefix: "/v1"
-  )
+extension API {
+    public static let standardOpenAI = API(
+        scheme: .https,
+        host: "api.openai.com",
+        pathPrefix: "/v1"
+    )
 }

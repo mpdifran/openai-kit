@@ -16,17 +16,17 @@ public struct Assistant: Codable, Equatable {
     public let temperature: Double?
     public let topP: Double?
     public let tools: [Tool]
-    public let metadata: [String : String]
+    public let metadata: [String: String]
 }
 
-public extension Assistant {
-    enum ReasoningEffort: String, Codable {
+extension Assistant {
+    public enum ReasoningEffort: String, Codable {
         case low
         case medium
         case high
     }
 
-    struct Tool: Codable, Equatable {
+    public struct Tool: Codable, Equatable, Sendable {
         public let type: ToolType
         public let function: Function?
 
@@ -40,15 +40,15 @@ public extension Assistant {
         }
     }
 
-    enum ToolType: String, Codable, Equatable {
+    public enum ToolType: String, Codable, Equatable, Sendable {
         case codeInterpreter = "code_interpreter"
-//        case fileSearch = "file_search"
+        //        case fileSearch = "file_search"
         case function
     }
 }
 
-public extension Assistant.Tool {
-    struct Function: Codable, Equatable {
+extension Assistant.Tool {
+    public struct Function: Codable, Equatable, Sendable {
         public let name: String
         public let description: String?
         public let parameters: Schema.Object?

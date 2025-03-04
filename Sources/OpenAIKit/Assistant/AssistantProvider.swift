@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AssistantProvider {
+public struct AssistantProvider: Sendable {
 
     private let requestHandler: RequestHandler
 
@@ -29,7 +29,7 @@ public struct AssistantProvider {
         instructions: String? = nil,
         reasoningEffort: Assistant.ReasoningEffort? = nil,
         tools: [Assistant.Tool]? = nil,
-        metadata: [String : String]? = nil,
+        metadata: [String: String]? = nil,
         temperature: Double? = nil,
         topP: Double? = nil,
         responseFormat: ResponseFormat? = nil
@@ -65,7 +65,7 @@ public struct AssistantProvider {
         instructions: String? = nil,
         reasoningEffort: Assistant.ReasoningEffort? = nil,
         tools: [Assistant.Tool]? = nil,
-        metadata: [String : String]? = nil,
+        metadata: [String: String]? = nil,
         temperature: Double? = nil,
         topP: Double? = nil,
         responseFormat: ResponseFormat? = nil
@@ -129,7 +129,7 @@ public struct AssistantProvider {
      */
     public func createThread(
         messages: [Thread.Message] = [],
-        metadata: [String : String]? = nil
+        metadata: [String: String]? = nil
     ) async throws -> Thread {
 
         let request = try CreateThreadRequest(
@@ -367,7 +367,9 @@ extension RunError {
     }
 
     static func incomplete(_ incompleteDetails: Run.IncompleteDetails?) -> RunError {
-        RunError(errorDescription: incompleteDetails?.reason ?? "Run incomplete.", failureReason: "Run incomplete.")
+        RunError(
+            errorDescription: incompleteDetails?.reason ?? "Run incomplete.",
+            failureReason: "Run incomplete.")
     }
 
     static func cancelled() -> RunError {
@@ -379,10 +381,14 @@ extension RunError {
     }
 
     static func invalidState() -> RunError {
-        RunError(errorDescription: "Run is in an invalid state.", failureReason: "Run is in an invalid state.")
+        RunError(
+            errorDescription: "Run is in an invalid state.",
+            failureReason: "Run is in an invalid state.")
     }
 
     static func missingToolCalls() -> RunError {
-        RunError(errorDescription: "Run requires tool calls but none were returned.", failureReason: "Run requires tool calls but none were returned.")
+        RunError(
+            errorDescription: "Run requires tool calls but none were returned.",
+            failureReason: "Run requires tool calls but none were returned.")
     }
 }

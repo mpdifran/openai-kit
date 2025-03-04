@@ -1,7 +1,7 @@
-public struct EmbeddingProvider {
-    
+public struct EmbeddingProvider: Sendable {
+
     private let requestHandler: RequestHandler
-    
+
     init(requestHandler: RequestHandler) {
         self.requestHandler = requestHandler
     }
@@ -28,7 +28,6 @@ public struct EmbeddingProvider {
 
         return try await requestHandler.perform(request: request)
     }
-
 
     /**
      Create embeddings
