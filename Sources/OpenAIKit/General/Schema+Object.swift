@@ -5,17 +5,17 @@
 //  Created by Mark DiFranco on 2025-03-03.
 //
 
-public extension Schema {
-    struct Object: Codable, Equatable {
+extension Schema {
+    public struct Object: Codable, Equatable, Sendable {
         public let type: ObjectType
-        public let properties: [String : Parameter]
+        public let properties: [String: Parameter]
         public let required: [String]
         public let additionalProperties: Bool
-        public let references: [String : Object]?
+        public let references: [String: Object]?
 
         public init(
-            properties: [String : Parameter],
-            references: [String : Object]? = nil
+            properties: [String: Parameter],
+            references: [String: Object]? = nil
         ) {
             self.type = .object
             self.properties = properties
@@ -26,10 +26,10 @@ public extension Schema {
 
         public init(
             type: ObjectType = .object,
-            properties: [String : Parameter],
+            properties: [String: Parameter],
             required: [String],
             additionalProperties: Bool = false,
-            references: [String : Object]? = nil
+            references: [String: Object]? = nil
         ) {
             self.type = type
             self.properties = properties
@@ -47,7 +47,7 @@ public extension Schema {
         }
     }
 
-    enum ObjectType: String, Codable, Equatable {
+    public enum ObjectType: String, Codable, Equatable, Sendable {
         case object
     }
 }

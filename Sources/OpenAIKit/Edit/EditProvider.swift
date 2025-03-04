@@ -1,15 +1,15 @@
-public struct EditProvider {
-    
+public struct EditProvider: Sendable {
+
     private let requestHandler: RequestHandler
-    
+
     init(requestHandler: RequestHandler) {
         self.requestHandler = requestHandler
     }
-    
+
     /**
      Create edit
      POST
-      
+
      https://api.openai.com/v1/edits
 
      Creates a new edit for the provided input, instruction, and parameters
@@ -22,7 +22,7 @@ public struct EditProvider {
         temperature: Double = 1.0,
         topP: Double = 1.0
     ) async throws -> Edit {
-        
+
         let request = try CreateEditRequest(
             model: model.id,
             input: input,
@@ -31,8 +31,8 @@ public struct EditProvider {
             temperature: temperature,
             topP: topP
         )
-        
+
         return try await requestHandler.perform(request: request)
     }
-    
+
 }
