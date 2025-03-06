@@ -5,6 +5,7 @@
 //  Created by Ronald Mannak on 3/6/23.
 //
 import XCTest
+
 @testable import OpenAIKit
 
 final class MessageTests: XCTestCase {
@@ -55,37 +56,39 @@ final class MessageTests: XCTestCase {
         XCTAssertNotEqual(decoded, FinishReason.length)
     }
 
-
     func testMessageCoding() throws {
         let messageData = """
             {"role": "user", "content": "Translate the following English text to French: "}
             """.data(using: .utf8)!
         let message = try decoder.decode(Chat.Message.self, from: messageData)
-        switch message {
-        case .system(_):
+        switch message.role {
+        case .system:
             XCTFail("incorrect role")
-        case .user(let content):
-            XCTAssertEqual(content, "Translate the following English text to French: ")
-        case .assistant(_):
+        case .user:
+            XCTAssertEqual(
+                message.content.first?.text, "Translate the following English text to French: ")
+        case .assistant:
             XCTFail("incorrect role")
         }
     }
 
     func testMessageRoundtrip() throws {
-        let message = Chat.Message.system(content: "You are a helpful assistant that translates English to French.")
+        let message = Chat.Message(
+            role: .system,
+            content: [.text("You are a helpful assistant that translates English to French.")])
         let encoded = try encoder.encode(message)
         let decoded = try decoder.decode(Chat.Message.self, from: encoded)
         print(String(data: encoded, encoding: .utf8)!)
-        switch decoded {
-        case .system(let content):
-            guard case let .system(content: original) = message else {
+        switch decoded.role {
+        case .system:
+            guard let original = message.content.first?.text else {
                 XCTFail()
                 return
             }
-            XCTAssertEqual(content, original)
-        case .user(_):
+            XCTAssertEqual(decoded.content.first?.text, original)
+        case .user:
             XCTFail("incorrect role")
-        case .assistant(_):
+        case .assistant:
             XCTFail("incorrect role")
         }
     }
@@ -110,44 +113,54 @@ final class MessageTests: XCTestCase {
             }
             """.data(using: .utf8)!
         let chat = try decoder.decode(Chat.self, from: exampleResponse)
-//        XCTAssertEqual(chat.id, "chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve")
-//        XCTAssertEqual(chat.created.timeIntervalSince1970, 1677649420)
-//        XCTAssertEqual(chat.usage.promptTokens, 56)
-//        XCTAssertEqual(chat.usage.completionTokens, 31)
-//        XCTAssertEqual(chat.usage.totalTokens, 87)
+        //        XCTAssertEqual(chat.id, "chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve")
+        //        XCTAssertEqual(chat.created.timeIntervalSince1970, 1677649420)
+        //        XCTAssertEqual(chat.usage.promptTokens, 56)
+        //        XCTAssertEqual(chat.usage.completionTokens, 31)
+        //        XCTAssertEqual(chat.usage.totalTokens, 87)
 
         XCTAssertEqual(chat.choices.count, 1)
         let firstChoice = chat.choices.first!
         XCTAssertEqual(firstChoice.index, 0)
-        switch firstChoice.message {
-        case .system(_):
+        switch firstChoice.message.role {
+        case .system:
             XCTFail()
-        case .assistant(let content):
-            XCTAssertEqual(content, "The 2020 World Series was played in Arlington, Texas at the Globe Life Field, which was the new home stadium for the Texas Rangers.")
-        case .user(_):
+        case .assistant:
+            XCTAssertEqual(
+                firstChoice.message.content.first?.text,
+                "The 2020 World Series was played in Arlington, Texas at the Globe Life Field, which was the new home stadium for the Texas Rangers."
+            )
+        case .user:
             XCTFail()
         }
     }
-    
+
     func testChatRequest() throws {
         let request = try CreateChatRequest(
-            model: "gpt-3.5-turbo", //.gpt3_5Turbo,
+            model: "gpt-3.5-turbo",  //.gpt3_5Turbo,
             messages: [
-                .system(content: "You are Malcolm Tucker from The Thick of It, an unfriendly assistant for writing mail and explaining science and history. You write text in your voice for me."),
-                .user(content: "tell me a joke"),
+                .init(
+                    role: .system,
+                    content: [
+                        .text(
+                            "You are Malcolm Tucker from The Thick of It, an unfriendly assistant for writing mail and explaining science and history. You write text in your voice for me."
+                        )
+                    ]),
+                .init(role: .user, content: [.text("tell me a joke")]),
             ],
             temperature: 1.0,
             topP: 1.0,
             n: 1,
             stream: false,
             stops: [],
-            maxTokens: nil,
+            maxCompletionTokens: nil,
             presencePenalty: 0.0,
             frequencyPenalty: 0.0,
             logitBias: [:],
-            user: nil
+            user: nil,
+            responseFormat: nil
         )
-        
+
         print(request.body)
     }
 }

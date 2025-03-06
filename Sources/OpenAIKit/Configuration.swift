@@ -1,10 +1,10 @@
 import NIOHTTP1
 
-public struct Configuration {
+public struct Configuration: Sendable {
     public let apiKey: String
     public let organization: String?
     public let api: API
-    
+
     var headers: HTTPHeaders {
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
@@ -12,10 +12,10 @@ public struct Configuration {
         if let organization = organization {
             headers.add(name: "OpenAI-Organization", value: organization)
         }
-        
+
         return headers
     }
-    
+
     public init(
         apiKey: String,
         organization: String? = nil,
@@ -25,5 +25,5 @@ public struct Configuration {
         self.organization = organization
         self.api = api
     }
-    
+
 }

@@ -5,8 +5,8 @@
 //  Created by Mark DiFranco on 2025-03-03.
 //
 
-public extension Schema {
-    struct Parameter: Codable, Equatable {
+extension Schema {
+    public struct Parameter: Codable, Equatable, Sendable {
         public let type: ParameterType?
         public let description: String?
         public let `enum`: [String]?
@@ -100,7 +100,7 @@ public extension Schema {
         }
     }
 
-    enum ParameterType: String, Codable, Equatable {
+    public enum ParameterType: String, Codable, Equatable, Sendable {
         case string
         case optionalString
         case number
@@ -165,8 +165,8 @@ public extension Schema {
     }
 }
 
-public extension Schema.Parameter {
-    init<T: RawRepresentable & CaseIterable>(
+extension Schema.Parameter {
+    public init<T: RawRepresentable & CaseIterable>(
         enum enumType: T.Type,
         description: String
     ) where T.RawValue == String {
@@ -177,7 +177,7 @@ public extension Schema.Parameter {
         self.ref = nil
     }
 
-    init<T: RawRepresentable & CaseIterable>(
+    public init<T: RawRepresentable & CaseIterable>(
         optionalEnum enumType: T.Type,
         description: String
     ) where T.RawValue == String {
