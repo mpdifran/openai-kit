@@ -19,6 +19,11 @@ extension File {
         case answers
         case search
         case classifications
+        case assistants
+        case vision
+        case userData = "user_data"
+        case evals
+        case batch
     }
 }
 
