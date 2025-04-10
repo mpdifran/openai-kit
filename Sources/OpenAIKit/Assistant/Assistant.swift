@@ -17,6 +17,7 @@ public struct Assistant: Codable, Equatable {
     public let topP: Double?
     public let tools: [Tool]
     public let metadata: [String: String]
+    public let responseFormat: ResponseFormat
 }
 
 extension Assistant {

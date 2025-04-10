@@ -6,7 +6,7 @@
 //
 
 public extension ResponseFormat {
-    enum `Type`: Codable {
+    enum `Type`: Codable, Equatable {
         case auto
         case text
         case jsonObject
@@ -14,7 +14,7 @@ public extension ResponseFormat {
     }
 }
 
-public struct ResponseFormat: Codable {
+public struct ResponseFormat: Codable, Equatable {
     public let type: `Type`
 
     public init(type: Type) {
@@ -24,7 +24,7 @@ public struct ResponseFormat: Codable {
     public init(from decoder: Decoder) throws {
         if
             let singleValueContainer = try? decoder.singleValueContainer(),
-            let type = try? singleValueContainer.decode(String.self)
+            let _ = try? singleValueContainer.decode(String.self)
         {
             self.type = .auto
         } else {
