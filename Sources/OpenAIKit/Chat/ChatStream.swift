@@ -28,5 +28,3 @@ extension ChatStream.Choice {
 }
 
 extension ChatStream.Choice.Message: Codable {}
-
-

@@ -221,6 +221,31 @@ public struct AssistantProvider: Sendable {
     }
 
     /**
+     Create and stream a run.
+     POST
+
+     https://api.openai.com/v1/threads/<thread_id>/runs
+
+     Create a run.
+     */
+    public func createAndStreamRun(
+        assistantID: String,
+        threadID: String,
+        tools: [Assistant.Tool]? = nil,
+        toolChoice: Run.ToolChoice? = nil
+    ) async throws -> AsyncThrowingStream<String, Error> {
+        let request = try CreateRunRequest(
+            threadID: threadID,
+            assistantID: assistantID,
+            tools: tools,
+            toolChoice: toolChoice,
+            stream: true
+        )
+
+        return try await requestHandler.stream(request: request)
+    }
+
+    /**
      List runs.
 
      https://api.openai.com/v1/threads/{thread_id}/runs

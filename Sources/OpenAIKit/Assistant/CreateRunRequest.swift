@@ -19,14 +19,16 @@ struct CreateRunRequest: Request {
         threadID: String,
         assistantID: String,
         tools: [Assistant.Tool]?,
-        toolChoice: Run.ToolChoice?
+        toolChoice: Run.ToolChoice?,
+        stream: Bool = false
     ) throws {
         self.path = "/threads/\(threadID)/runs"
 
         let body = Body(
             assistantId: assistantID,
             tools: tools,
-            toolChoice: toolChoice
+            toolChoice: toolChoice,
+            stream: stream
         )
 
         self.body = try Self.encoder.encode(body)
@@ -38,5 +40,6 @@ extension CreateRunRequest {
         let assistantId: String
         let tools: [Assistant.Tool]?
         let toolChoice: Run.ToolChoice?
+        let stream: Bool
     }
 }
