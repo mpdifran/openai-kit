@@ -316,6 +316,29 @@ public struct AssistantProvider: Sendable {
     }
 
     /**
+     Submit tool outputs and stream a run.
+     POST
+
+     https://api.openai.com/v1/threads/<thread_id>/runs/<run_id>/submit_tool_outputs
+
+     When a run has the `status: "requires_action"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.
+     */
+    public func submitToolOutputAndStreamRun(
+        threadID: String,
+        runID: String,
+        toolOutputs: [ToolOutput]
+    ) async throws -> AsyncThrowingStream<String, Error> {
+        let request = try SubmitToolOutputsToRunRequest(
+            threadID: threadID,
+            runID: runID,
+            toolOutputs: toolOutputs,
+            stream: true
+        )
+
+        return try await requestHandler.stream(request: request)
+    }
+
+    /**
      Polls a run until it completes, then retrieves the latest assistant message.
 
      - Parameters:

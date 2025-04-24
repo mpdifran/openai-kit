@@ -18,11 +18,15 @@ struct SubmitToolOutputsToRunRequest: Request {
     init(
         threadID: String,
         runID: String,
-        toolOutputs: [ToolOutput]
+        toolOutputs: [ToolOutput],
+        stream: Bool = false
     ) throws {
         self.path = "/threads/\(threadID)/runs/\(runID)/submit_tool_outputs"
 
-        let body = Body(toolOutputs: toolOutputs)
+        let body = Body(
+            toolOutputs: toolOutputs,
+            stream: stream
+        )
 
         self.body = try Self.encoder.encode(body)
     }
@@ -31,5 +35,6 @@ struct SubmitToolOutputsToRunRequest: Request {
 extension SubmitToolOutputsToRunRequest {
     struct Body: Encodable {
         let toolOutputs: [ToolOutput]
+        let stream: Bool
     }
 }
