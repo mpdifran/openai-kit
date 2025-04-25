@@ -19,7 +19,7 @@ extension Schema {
         ) {
             self.type = .object
             self.properties = properties
-            self.required = Array(properties.keys.sorted())
+            self.required = properties.keys.sorted()
             self.additionalProperties = false
             self.references = references
         }
