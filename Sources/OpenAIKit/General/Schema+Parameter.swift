@@ -105,6 +105,8 @@ extension Schema {
         case optionalString
         case number
         case optionalNumber
+        case integer
+        case optionalInteger
         case array
         case optionalArray
 
@@ -117,6 +119,8 @@ extension Schema {
                     self = optional ? .optionalString : .string
                 } else if value.contains("number") {
                     self = optional ? .optionalNumber : .number
+                } else if value.contains("integer") {
+                    self = optional ? .optionalInteger : .integer
                 } else if value.contains("array") {
                     self = optional ? .optionalArray : .array
                 } else {
@@ -133,6 +137,8 @@ extension Schema {
                     self = .string
                 case "number":
                     self = .number
+                case "integer":
+                    self = .integer
                 case "array":
                     self = .array
                 default:
@@ -156,6 +162,10 @@ extension Schema {
                 try container.encode("number")
             case .optionalNumber:
                 try container.encode(["number", "null"])
+            case .integer:
+                try container.encode("integer")
+            case .optionalInteger:
+                try container.encode(["integer", "null"])
             case .array:
                 try container.encode("array")
             case .optionalArray:
