@@ -15,45 +15,23 @@ extension Schema {
 
         public init(
             description: String,
-            arrayOf items: Schema.Object
+            arrayOf items: Schema.Item
         ) {
             self.type = .array
             self.description = description
             self.enum = nil
-            self.items = .object(items)
+            self.items = items
             self.ref = nil
         }
 
         public init(
             description: String,
-            optionalArrayOf items: Schema.Object
+            optionalArrayOf items: Schema.Item
         ) {
             self.type = .optionalArray
             self.description = description
             self.enum = nil
-            self.items = .object(items)
-            self.ref = nil
-        }
-
-        public init(
-            description: String,
-            arrayOf items: Schema.Parameter
-        ) {
-            self.type = .array
-            self.description = description
-            self.enum = nil
-            self.items = .parameter(items)
-            self.ref = nil
-        }
-
-        public init(
-            description: String,
-            optionalArrayOf items: Schema.Parameter
-        ) {
-            self.type = .optionalArray
-            self.description = description
-            self.enum = nil
-            self.items = .parameter(items)
+            self.items = items
             self.ref = nil
         }
 
@@ -72,25 +50,12 @@ extension Schema {
             type: ParameterType,
             description: String,
             enum: [String]? = nil,
-            items: Object? = nil
+            items: Item? = nil
         ) {
             self.type = type
             self.description = description
             self.enum = `enum`
-            self.items = items.map { .object($0) }
-            self.ref = nil
-        }
-
-        public init(
-            type: ParameterType,
-            description: String,
-            enum: [String]? = nil,
-            items: Parameter? = nil
-        ) {
-            self.type = type
-            self.description = description
-            self.enum = `enum`
-            self.items = items.map { .parameter($0) }
+            self.items = items
             self.ref = nil
         }
 
