@@ -73,7 +73,24 @@ extension Schema {
                 self.type = try container.decode(ParameterType.self, forKey: .type)
                 self.description = try container.decodeIfPresent(String.self, forKey: .description)
                 self.enum = try container.decodeIfPresent([String].self, forKey: .enum)
-                self.items = try container.decodeIfPresent(Item.self, forKey: .items)
+                if container.contains(.items) {
+                    let itemsDecoder = try container.superDecoder(forKey: .items)
+                    if let object = try? Schema.Object(from: itemsDecoder) {
+                        self.items = .object(object)
+                    } else if let parameter = try? Schema.Parameter(from: itemsDecoder) {
+                        self.items = .parameter(parameter)
+                    } else {
+                        throw DecodingError.typeMismatch(
+                            Schema.Item.self,
+                            DecodingError.Context(
+                                codingPath: decoder.codingPath + [CodingKeys.items],
+                                debugDescription: "Unable to decode items as Schema.Item"
+                            )
+                        )
+                    }
+                } else {
+                    self.items = nil
+                }
                 self.ref = nil
             }
         }
@@ -87,7 +104,15 @@ extension Schema {
                 try container.encode(type, forKey: .type)
                 try container.encodeIfPresent(description, forKey: .description)
                 try container.encodeIfPresent(`enum`, forKey: .enum)
-                try container.encodeIfPresent(items, forKey: .items)
+                if let items = self.items {
+                    let itemsEncoder = container.superEncoder(forKey: .items)
+                    switch items {
+                    case .object(let object):
+                        try object.encode(to: itemsEncoder)
+                    case .parameter(let parameter):
+                        try parameter.encode(to: itemsEncoder)
+                    }
+                }
             }
         }
 
