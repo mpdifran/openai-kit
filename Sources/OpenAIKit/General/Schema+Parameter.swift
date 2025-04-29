@@ -10,7 +10,7 @@ extension Schema {
         public let type: ParameterType?
         public let description: String?
         public let `enum`: [String]?
-        public let items: Object?
+        public let items: Item?
         public let ref: String?
 
         public init(
@@ -20,7 +20,7 @@ extension Schema {
             self.type = .array
             self.description = description
             self.enum = nil
-            self.items = items
+            self.items = .object(items)
             self.ref = nil
         }
 
@@ -31,7 +31,29 @@ extension Schema {
             self.type = .optionalArray
             self.description = description
             self.enum = nil
-            self.items = items
+            self.items = .object(items)
+            self.ref = nil
+        }
+
+        public init(
+            description: String,
+            arrayOf items: Schema.Parameter
+        ) {
+            self.type = .array
+            self.description = description
+            self.enum = nil
+            self.items = .parameter(items)
+            self.ref = nil
+        }
+
+        public init(
+            description: String,
+            optionalArrayOf items: Schema.Parameter
+        ) {
+            self.type = .optionalArray
+            self.description = description
+            self.enum = nil
+            self.items = .parameter(items)
             self.ref = nil
         }
 
@@ -55,7 +77,20 @@ extension Schema {
             self.type = type
             self.description = description
             self.enum = `enum`
-            self.items = items
+            self.items = items.map { .object($0) }
+            self.ref = nil
+        }
+
+        public init(
+            type: ParameterType,
+            description: String,
+            enum: [String]? = nil,
+            items: Parameter? = nil
+        ) {
+            self.type = type
+            self.description = description
+            self.enum = `enum`
+            self.items = items.map { .parameter($0) }
             self.ref = nil
         }
 
@@ -73,7 +108,7 @@ extension Schema {
                 self.type = try container.decode(ParameterType.self, forKey: .type)
                 self.description = try container.decodeIfPresent(String.self, forKey: .description)
                 self.enum = try container.decodeIfPresent([String].self, forKey: .enum)
-                self.items = try container.decodeIfPresent(Object.self, forKey: .items)
+                self.items = try container.decodeIfPresent(Item.self, forKey: .items)
                 self.ref = nil
             }
         }
@@ -172,6 +207,13 @@ extension Schema {
                 try container.encode(["array", "null"])
             }
         }
+    }
+}
+
+public extension Schema {
+    indirect enum Item: Codable, Equatable, Sendable {
+        case object(Schema.Object)
+        case parameter(Schema.Parameter)
     }
 }
 

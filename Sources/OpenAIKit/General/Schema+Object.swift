@@ -49,5 +49,6 @@ extension Schema {
 
     public enum ObjectType: String, Codable, Equatable, Sendable {
         case object
+        case string
     }
 }
