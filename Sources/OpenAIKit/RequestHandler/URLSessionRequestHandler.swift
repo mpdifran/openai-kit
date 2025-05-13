@@ -42,6 +42,7 @@ import Foundation
             decoder.dateDecodingStrategy = request.dateDecodingStrategy
 
             return AsyncThrowingStream<T, Error> { [urlRequest] continuation in
+                var pending = ""
                 Task(priority: .userInitiated) {
                     do {
                         let (bytes, _) = try await session.bytes(for: urlRequest)
@@ -58,12 +59,16 @@ import Foundation
                                     return
                                 }
 
+                                // Append to contents of previous frame if it failed to parse.
+                                pending += trimmed
+
                                 // Decode and yield valid JSON frames
-                                guard let jsonData = trimmed.data(using: .utf8),
+                                guard let jsonData = pending.data(using: .utf8),
                                       let value = try? decoder.decode(T.self, from: jsonData) else {
                                     continue
                                 }
                                 continuation.yield(value)
+                                pending = ""
                             }
                         }
                         continuation.finish()

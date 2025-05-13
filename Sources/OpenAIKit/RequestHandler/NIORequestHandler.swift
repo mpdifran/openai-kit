@@ -83,6 +83,7 @@ struct NIORequestHandler: RequestHandler {
         let response = try await httpClient.execute(httpClientRequest, timeout: .seconds(25))
 
         return AsyncThrowingStream<T, Error> { continuation in
+            var pending = ""
             Task(priority: .userInitiated) {
                 do {
                     for try await buffer in response.body {
@@ -100,12 +101,18 @@ struct NIORequestHandler: RequestHandler {
                                 return
                             }
 
+                            // Append to contents of previous frame if it failed to parse.
+                            pending += trimmed
+
                             // Decode and yield valid JSON frames
-                            guard let jsonData = trimmed.data(using: .utf8),
-                                  let value = try? decoder.decode(T.self, from: jsonData) else {
-                                continue
+                            guard let jsonData = pending.data(using: .utf8) else { continue }
+                            do {
+                                let value = try decoder.decode(T.self, from: jsonData)
+                                continuation.yield(value)
+                                pending = ""
+                            } catch {
+                                print(error.localizedDescription)
                             }
-                            continuation.yield(value)
                         }
                     }
                     continuation.finish()
