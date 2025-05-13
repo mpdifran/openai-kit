@@ -233,7 +233,7 @@ public struct AssistantProvider: Sendable {
         threadID: String,
         tools: [Assistant.Tool]? = nil,
         toolChoice: Run.ToolChoice? = nil
-    ) async throws -> AsyncThrowingStream<String, Error> {
+    ) async throws -> AsyncThrowingStream<ThreadStreamEvent, Error> {
         let request = try CreateRunRequest(
             threadID: threadID,
             assistantID: assistantID,
@@ -327,7 +327,7 @@ public struct AssistantProvider: Sendable {
         threadID: String,
         runID: String,
         toolOutputs: [ToolOutput]
-    ) async throws -> AsyncThrowingStream<String, Error> {
+    ) async throws -> AsyncThrowingStream<ThreadStreamEvent, Error> {
         let request = try SubmitToolOutputsToRunRequest(
             threadID: threadID,
             runID: runID,

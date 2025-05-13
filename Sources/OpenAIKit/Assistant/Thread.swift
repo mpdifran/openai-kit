@@ -147,3 +147,29 @@ extension Thread.Message.Content {
         }
     }
 }
+
+public extension Thread.Message {
+    struct Delta: Codable {
+        public let id: String
+        public let delta: DeltaContentList
+    }
+}
+
+public extension Thread.Message.Delta {
+    struct DeltaContentList: Codable {
+        public let content: [DeltaContent]
+    }
+}
+
+public extension Thread.Message.Delta {
+    struct DeltaContent: Codable {
+        public let index: Int
+        public let text: Text
+    }
+}
+
+public extension Thread.Message.Delta.DeltaContent {
+    struct Text: Codable {
+        public let value: String
+    }
+}

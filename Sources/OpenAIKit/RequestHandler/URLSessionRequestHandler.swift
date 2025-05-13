@@ -44,19 +44,27 @@ import Foundation
             return AsyncThrowingStream<T, Error> { [urlRequest] continuation in
                 Task(priority: .userInitiated) {
                     do {
-
                         let (bytes, _) = try await session.bytes(for: urlRequest)
                         for try await buffer in bytes.lines {
-                            buffer
-                                .components(separatedBy: "data: ")
-                                .filter { $0 != "data: " }
-                                .compactMap {
-                                    guard let data = $0.data(using: .utf8) else { return nil }
-                                    return try? decoder.decode(T.self, from: data)
+                            let text = buffer
+                            let segments = text.components(separatedBy: "data: ")
+                            for segment in segments {
+                                let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
+                                guard !trimmed.isEmpty else { continue }
+
+                                // Detect end of stream
+                                if trimmed == "[DONE]" {
+                                    continuation.finish()
+                                    return
                                 }
-                                .forEach { value in
-                                    continuation.yield(value)
+
+                                // Decode and yield valid JSON frames
+                                guard let jsonData = trimmed.data(using: .utf8),
+                                      let value = try? decoder.decode(T.self, from: jsonData) else {
+                                    continue
                                 }
+                                continuation.yield(value)
+                            }
                         }
                         continuation.finish()
                     } catch {
