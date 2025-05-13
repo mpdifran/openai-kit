@@ -87,7 +87,9 @@ struct NIORequestHandler: RequestHandler {
             Task(priority: .userInitiated) {
                 do {
                     for try await buffer in response.body {
-                        let text = String(buffer: buffer)
+                        print("DEBUG RAW FRAME: \(String(buffer: buffer))")
+
+                        let text = String(buffer: buffer).trimmingCharacters(in: .whitespacesAndNewlines)
                         guard text.hasPrefix("data:") else { continue }
 
                         pending += text

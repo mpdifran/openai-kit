@@ -47,7 +47,7 @@ import Foundation
                     do {
                         let (bytes, _) = try await session.bytes(for: urlRequest)
                         for try await buffer in bytes.lines {
-                            let text = buffer
+                            let text = buffer.trimmingCharacters(in: .whitespacesAndNewlines)
                             guard text.hasPrefix("data:") else { continue }
 
                             pending += text
