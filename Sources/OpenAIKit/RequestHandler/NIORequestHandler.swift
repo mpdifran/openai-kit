@@ -88,7 +88,8 @@ struct NIORequestHandler: RequestHandler {
                 do {
                     for try await buffer in response.body {
                         let text = String(buffer: buffer)
-                        let segments = text.components(separatedBy: "data: ")
+                        pending += text
+                        let segments = pending.components(separatedBy: "data: ")
                         for segment in segments {
                             let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
                             guard !trimmed.isEmpty else { continue }
@@ -101,17 +102,14 @@ struct NIORequestHandler: RequestHandler {
                                 return
                             }
 
-                            // Append to contents of previous frame if it failed to parse.
-                            pending += trimmed
-
                             // Decode and yield valid JSON frames
-                            guard let jsonData = pending.data(using: .utf8) else { continue }
+                            guard let jsonData = trimmed.data(using: .utf8) else { continue }
                             do {
                                 let value = try decoder.decode(T.self, from: jsonData)
                                 continuation.yield(value)
                                 pending = ""
                             } catch {
-                                print(error.localizedDescription)
+                                print("DEBUG PARSING ERROR: \(trimmed)")
                             }
                         }
                     }

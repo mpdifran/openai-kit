@@ -48,7 +48,8 @@ import Foundation
                         let (bytes, _) = try await session.bytes(for: urlRequest)
                         for try await buffer in bytes.lines {
                             let text = buffer
-                            let segments = text.components(separatedBy: "data: ")
+                            pending += text
+                            let segments = pending.components(separatedBy: "data: ")
                             for segment in segments {
                                 let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
                                 guard !trimmed.isEmpty else { continue }
@@ -59,11 +60,8 @@ import Foundation
                                     return
                                 }
 
-                                // Append to contents of previous frame if it failed to parse.
-                                pending += trimmed
-
                                 // Decode and yield valid JSON frames
-                                guard let jsonData = pending.data(using: .utf8),
+                                guard let jsonData = trimmed.data(using: .utf8),
                                       let value = try? decoder.decode(T.self, from: jsonData) else {
                                     continue
                                 }
