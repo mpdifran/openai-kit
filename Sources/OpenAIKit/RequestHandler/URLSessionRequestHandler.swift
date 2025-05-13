@@ -48,6 +48,8 @@ import Foundation
                         let (bytes, _) = try await session.bytes(for: urlRequest)
                         for try await buffer in bytes.lines {
                             let text = buffer
+                            guard text.hasPrefix("data:") else { continue }
+
                             pending += text
                             let segments = pending.components(separatedBy: "data: ")
                             for segment in segments {

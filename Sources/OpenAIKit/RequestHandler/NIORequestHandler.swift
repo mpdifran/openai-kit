@@ -88,13 +88,13 @@ struct NIORequestHandler: RequestHandler {
                 do {
                     for try await buffer in response.body {
                         let text = String(buffer: buffer)
+                        guard text.hasPrefix("data:") else { continue }
+
                         pending += text
                         let segments = pending.components(separatedBy: "data: ")
                         for segment in segments {
                             let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
                             guard !trimmed.isEmpty else { continue }
-
-                            print("DEBUG STREAM MESSAGE: \(trimmed)")
 
                             // Detect end of stream
                             if trimmed == "[DONE]" {
