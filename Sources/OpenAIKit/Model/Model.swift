@@ -30,7 +30,7 @@ extension Model {
     }
 }
 
-public protocol ModelID {
+public protocol ModelID: Hashable, Sendable {
     var id: String { get }
 }
 
