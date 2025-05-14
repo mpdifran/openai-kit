@@ -6,7 +6,7 @@
 //
 
 extension Schema {
-    public struct Parameter: Codable, Equatable, Sendable {
+    public struct Parameter: Codable, Hashable, Sendable {
         public let type: ParameterType?
         public let description: String?
         public let `enum`: [String]?
@@ -201,7 +201,7 @@ extension Schema {
 }
 
 public extension Schema {
-    indirect enum Item: Codable, Equatable, Sendable {
+    indirect enum Item: Codable, Hashable, Sendable {
         case object(Schema.Object)
         case parameter(Schema.Parameter)
     }

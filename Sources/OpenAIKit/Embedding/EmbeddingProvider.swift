@@ -15,7 +15,7 @@ public struct EmbeddingProvider: Sendable {
      Creates an embedding vector representing the input text.
      */
     public func create(
-        model: ModelID = Model.GPT3.textEmbeddingAda002,
+        model: ModelID = .GPT3.textEmbeddingAda002,
         input: [String],
         user: String? = nil
     ) async throws -> CreateEmbeddingResponse {
@@ -38,7 +38,7 @@ public struct EmbeddingProvider: Sendable {
      Creates an embedding vector representing the input text.
      */
     public func create(
-        model: ModelID = Model.GPT3.textEmbeddingAda002,
+        model: ModelID = .GPT3.textEmbeddingAda002,
         input: String,
         user: String? = nil
     ) async throws -> CreateEmbeddingResponse {

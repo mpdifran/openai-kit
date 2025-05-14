@@ -6,7 +6,7 @@
 //
 
 public extension ResponseFormat {
-    enum `Type`: Codable, Equatable {
+    enum `Type`: Codable, Hashable, Sendable {
         case auto
         case text
         case jsonObject
@@ -14,7 +14,7 @@ public extension ResponseFormat {
     }
 }
 
-public struct ResponseFormat: Codable, Equatable {
+public struct ResponseFormat: Codable, Hashable, Sendable {
     public let type: `Type`
 
     public init(type: Type) {

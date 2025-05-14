@@ -5,7 +5,7 @@
 //  Created by Mark DiFranco on 2025-03-03.
 //
 
-public struct ResponseSchema: Codable, Equatable {
+public struct ResponseSchema: Codable, Hashable, Sendable {
     public let name: String
     public let description: String?
     public let strict: Bool

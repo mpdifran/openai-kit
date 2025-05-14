@@ -6,7 +6,7 @@
 //
 
 extension Schema {
-    public struct Object: Codable, Equatable, Sendable {
+    public struct Object: Codable, Hashable, Sendable {
         public let type: ObjectType
         public let properties: [String: Parameter]
         public let required: [String]

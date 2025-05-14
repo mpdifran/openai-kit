@@ -27,7 +27,7 @@ extension Assistant {
         case high
     }
 
-    public struct Tool: Codable, Equatable, Sendable {
+    public struct Tool: Codable, Hashable, Sendable {
         public let type: ToolType
         public let function: Function?
 
@@ -49,7 +49,7 @@ extension Assistant {
 }
 
 extension Assistant.Tool {
-    public struct Function: Codable, Equatable, Sendable {
+    public struct Function: Codable, Hashable, Sendable {
         public let name: String
         public let description: String?
         public let parameters: Schema.Object?
