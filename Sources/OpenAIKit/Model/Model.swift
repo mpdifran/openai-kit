@@ -30,58 +30,58 @@ extension Model {
     }
 }
 
-public protocol ModelID: Hashable, Sendable {
-    var id: String { get }
+public struct ModelID: Codable, Hashable, Sendable {
+    let id: String
 }
 
-extension Model {
-    public enum GPT4: String, ModelID {
-        case gpt4 = "gpt-4"
-        case gpt4Turbo = "gpt-4-turbo"
-        case gpt40314 = "gpt-4-0314"
-        case gpt4_32k = "gpt-4-32k"
-        case gpt4_32k0314 = "gpt-4-32k-0314"
-        case gpt_4o = "gpt-4o"
-        case gpt_4o_0513 = "gpt-4o-2024-05-13"
-        case gpt_4o_mini = "gpt-4o-mini"
-        case gpt_4o_mini_0718 = "gpt-4o-mini-2024-07-18"
+extension ModelID {
+    public enum GPT4 {
+        public static let gpt4 = ModelID(id: "gpt-4")
+        public static let gpt4Turbo = ModelID(id: "gpt-4-turbo")
+        public static let gpt40314 = ModelID(id: "gpt-4-0314")
+        public static let gpt4_32k = ModelID(id: "gpt-4-32k")
+        public static let gpt4_32k0314 = ModelID(id: "gpt-4-32k-0314")
+        public static let gpt_4o = ModelID(id: "gpt-4o")
+        public static let gpt_4o_0513 = ModelID(id: "gpt-4o-2024-05-13")
+        public static let gpt_4o_mini = ModelID(id: "gpt-4o-mini")
+        public static let gpt_4o_mini_0718 = ModelID(id: "gpt-4o-mini-2024-07-18")
     }
 
-    public enum GPT3: String, ModelID {
-        case gpt3_5Turbo = "gpt-3.5-turbo"
-        case gpt3_5Turbo16K = "gpt-3.5-turbo-16k"
-        case gpt3_5Turbo0301 = "gpt-3.5-turbo-0301"
-        case textDavinci003 = "text-davinci-003"
-        case textDavinci002 = "text-davinci-002"
-        case textCurie001 = "text-curie-001"
-        case textBabbage001 = "text-babbage-001"
-        case textAda001 = "text-ada-001"
-        case textEmbeddingAda002 = "text-embedding-ada-002"
-        case textDavinci001 = "text-davinci-001"
-        case textDavinciEdit001 = "text-davinci-edit-001"
-        case davinciInstructBeta = "davinci-instruct-beta"
-        case davinci
-        case curieInstructBeta = "curie-instruct-beta"
-        case curie
-        case ada
-        case babbage
+    public enum GPT3 {
+        public static let gpt3_5Turbo = ModelID(id: "gpt-3.5-turbo")
+        public static let gpt3_5Turbo16K = ModelID(id: "gpt-3.5-turbo-16k")
+        public static let gpt3_5Turbo0301 = ModelID(id: "gpt-3.5-turbo-0301")
+        public static let textDavinci003 = ModelID(id: "text-davinci-003")
+        public static let textDavinci002 = ModelID(id: "text-davinci-002")
+        public static let textCurie001 = ModelID(id: "text-curie-001")
+        public static let textBabbage001 = ModelID(id: "text-babbage-001")
+        public static let textAda001 = ModelID(id: "text-ada-001")
+        public static let textEmbeddingAda002 = ModelID(id: "text-embedding-ada-002")
+        public static let textDavinci001 = ModelID(id: "text-davinci-001")
+        public static let textDavinciEdit001 = ModelID(id: "text-davinci-edit-001")
+        public static let davinciInstructBeta = ModelID(id: "davinci-instruct-beta")
+        public static let davinci = ModelID(id: "davinci")
+        public static let curieInstructBeta = ModelID(id: "curie-instruct-beta")
+        public static let curie = ModelID(id: "curie")
+        public static let ada = ModelID(id: "ada")
+        public static let babbage = ModelID(id: "babbage")
     }
 
-    public enum Codex: String, ModelID {
-        case codeDavinci002 = "code-davinci-002"
-        case codeCushman001 = "code-cushman-001"
-        case codeDavinci001 = "code-davinci-001"
-        case codeDavinciEdit001 = "code-davinci-edit-001"
+    public enum Codex {
+        public static let codeDavinci002 = ModelID(id: "code-davinci-002")
+        public static let codeCushman001 = ModelID(id: "code-cushman-001")
+        public static let codeDavinci001 = ModelID(id: "code-davinci-001")
+        public static let codeDavinciEdit001 = ModelID(id: "code-davinci-edit-001")
     }
 
-    public enum Whisper: String, ModelID {
-        case whisper1 = "whisper-1"
+    public enum Whisper {
+        public static let whisper1 = ModelID(id: "whisper-1")
     }
 
-    public enum Gemini: String, ModelID {
-        case flash2_0 = "gemini-2.0-flash"
-        case flash1_5 = "gemini-1.5-flash"
-        case pro1_5 = "gemini-1.5-pro"
+    public enum Gemini {
+        public static let flash2_0 = ModelID(id: "gemini-2.0-flash")
+        public static let flash1_5 = ModelID(id: "gemini-1.5-flash")
+        public static let pro1_5 = ModelID(id: "gemini-1.5-pro")
     }
 }
 
