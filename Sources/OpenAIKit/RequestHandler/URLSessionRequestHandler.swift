@@ -47,28 +47,35 @@ import Foundation
                     do {
                         let (bytes, _) = try await session.bytes(for: urlRequest)
                         for try await buffer in bytes.lines {
-                            let text = buffer.trimmingCharacters(in: .whitespacesAndNewlines)
-                            guard text.hasPrefix("data:") else { continue }
+                            let text = buffer
 
+                            // Append to the buffer, and break up by newline. A complete frame will have 2 newlines at the end. This means lines.last will either be an empty string, or an incomplete frame.
                             pending += text
-                            let segments = pending.components(separatedBy: "data: ")
-                            for segment in segments {
-                                let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
-                                guard !trimmed.isEmpty else { continue }
+                            let lines = pending.components(separatedBy: .newlines)
+                            pending = lines.last ?? ""
+
+                            let completeLines = lines.dropLast()
+
+                            for line in completeLines {
+                                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                                guard trimmed.hasPrefix("data: ") else { continue }
+
+                                let dataValue = trimmed.replacingOccurrences(of: "data: ", with: "")
 
                                 // Detect end of stream
-                                if trimmed == "[DONE]" {
+                                if dataValue == "[DONE]" {
                                     continuation.finish()
                                     return
                                 }
 
                                 // Decode and yield valid JSON frames
-                                guard let jsonData = trimmed.data(using: .utf8),
-                                      let value = try? decoder.decode(T.self, from: jsonData) else {
+                                guard
+                                    let jsonData = dataValue.data(using: .utf8),
+                                    let value = try? decoder.decode(T.self, from: jsonData)
+                                else {
                                     continue
                                 }
                                 continuation.yield(value)
-                                pending = ""
                             }
                         }
                         continuation.finish()
