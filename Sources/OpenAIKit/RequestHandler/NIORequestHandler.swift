@@ -109,14 +109,12 @@ struct NIORequestHandler: RequestHandler {
                             }
 
                             // Decode and yield valid JSON frames
-                            guard let jsonData = dataValue.data(using: .utf8) else { continue }
+                            guard
+                                let jsonData = dataValue.data(using: .utf8),
+                                let value = try? decoder.decode(T.self, from: jsonData)
+                            else { continue }
 
-                            do {
-                                let value = try decoder.decode(T.self, from: jsonData)
-                                continuation.yield(value)
-                            } catch {
-                                print("DEBUG PARSING ERROR: \(dataValue)")
-                            }
+                            continuation.yield(value)
                         }
                     }
                     continuation.finish()
