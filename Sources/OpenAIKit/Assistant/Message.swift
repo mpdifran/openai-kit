@@ -84,34 +84,34 @@ extension Message.Content {
 
 extension Message.Content {
 
-  private enum ContentKeys: String, CodingKey {
-      case id
-      case type
-      case text
-      case imageURL
-      case imageFile
-      case refusal
-      case function
-  }
+    private enum ContentKeys: String, CodingKey {
+        case id
+        case type
+        case text
+        case imageURL
+        case imageFile
+        case refusal
+        case function
+    }
 
-  private enum TextContentKeys: String, CodingKey {
-      case value
-  }
+    private enum TextContentKeys: String, CodingKey {
+        case value
+    }
 
-  private enum ImageURLKeys: String, CodingKey {
-      case url
-      case detail
-  }
+    private enum ImageURLKeys: String, CodingKey {
+        case url
+        case detail
+    }
 
-  private enum ImageFileKeys: String, CodingKey {
-      case fileId
-      case detail
-  }
+    private enum ImageFileKeys: String, CodingKey {
+        case fileId
+        case detail
+    }
 
-  private enum FunctionKeys: String, CodingKey {
-      case name
-      case arguments
-  }
+    private enum FunctionKeys: String, CodingKey {
+        case name
+        case arguments
+    }
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: ContentKeys.self)
@@ -119,9 +119,13 @@ extension Message.Content {
 
         switch type {
         case "text":
-            let textContainer = try container.nestedContainer(keyedBy: TextContentKeys.self, forKey: .text)
-            let text = try textContainer.decode(String.self, forKey: .value)
-            self = .text(text)
+            if let raw = try? container.decode(String.self, forKey: .text) {
+                self = .text(raw)
+            } else {
+                let textContainer = try container.nestedContainer(keyedBy: TextContentKeys.self, forKey: .text)
+                let value = try textContainer.decode(String.self, forKey: .value)
+                self = .text(value)
+            }
         case "image_url":
             let imageURLContainer = try container.nestedContainer(keyedBy: ImageURLKeys.self, forKey: .imageURL)
 

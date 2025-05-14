@@ -95,14 +95,24 @@ extension Thread.Message.Content {
         case detail
     }
 
+    private enum TextKeys: String, CodingKey {
+        case value
+    }
+
     public init(from decoder: any Decoder) throws {
         let contentContainer = try decoder.container(keyedBy: ContentKeys.self)
         let type = try contentContainer.decode(String.self, forKey: .type)
 
         switch type {
         case "text":
-            let text = try contentContainer.decode(String.self, forKey: .text)
-            self = .text(text)
+            // Handle text either as a raw string or as an object with a "value" field
+            if let raw = try? contentContainer.decode(String.self, forKey: .text) {
+                self = .text(raw)
+            } else {
+                let textContainer = try contentContainer.nestedContainer(keyedBy: TextKeys.self, forKey: .text)
+                let value = try textContainer.decode(String.self, forKey: .value)
+                self = .text(value)
+            }
         case "image_url":
             let imageURLContainer = try contentContainer.nestedContainer(keyedBy: ImageURLKeys.self, forKey: .imageURL)
 
