@@ -31,7 +31,7 @@ extension Model {
 }
 
 public struct ModelID: Codable, Hashable, Sendable {
-    let id: String
+    public let id: String
 }
 
 extension ModelID {
