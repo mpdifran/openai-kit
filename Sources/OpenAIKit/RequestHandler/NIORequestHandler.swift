@@ -108,6 +108,8 @@ struct NIORequestHandler: RequestHandler {
                                 return
                             }
 
+                            print("[TRACE] \(dataValue)")
+
                             // Decode and yield valid JSON frames
                             guard
                                 let jsonData = dataValue.data(using: .utf8),
