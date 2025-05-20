@@ -157,10 +157,20 @@ public extension Response {
   struct OutputText: Codable, Hashable, Sendable {
     public let type: `Type`
     public let text: String
+    public let annotations: [Annotation]
 
-    public init(type: Type, text: String) {
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case outputText = "output_text"
+    }
+
+    public init(
+      type: `Type`,
+      text: String,
+      annotations: [Annotation]
+    ) {
       self.type = type
       self.text = text
+      self.annotations = annotations
     }
   }
 
@@ -168,22 +178,14 @@ public extension Response {
     public let type: `Type`
     public let refusal: String
 
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case refusal = "refusal"
+    }
+
     public init(type: `Type`, refusal: String) {
       self.type = type
       self.refusal = refusal
     }
-  }
-}
-
-public extension Response.OutputText {
-  enum `Type`: String, Codable, Hashable, Sendable {
-    case outputText = "output_text"
-  }
-}
-
-public extension Response.Refusal {
-  enum `Type`: String, Codable, Hashable, Sendable {
-    case refusal = "refusal"
   }
 }
 
@@ -226,17 +228,15 @@ public extension Response.OutputItem {
     public let id: String
     public let status: String
 
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case webSearchCall = "web_search_call"
+    }
+
     public init(type: `Type`, id: String, status: String) {
       self.type = type
       self.id = id
       self.status = status
     }
-  }
-}
-
-public extension Response.OutputItem.WebSearchToolCall {
-  enum `Type`: String, Codable, Hashable, Sendable {
-    case webSearchCall = "web_search_call"
   }
 }
 
@@ -247,17 +247,21 @@ public extension Response.OutputItem {
     public let summary: [SummaryText]
     public let encryptedContent: String?
     public let status: Response.Status?
+
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case reasoning = "reasoning"
+    }
   }
 }
 
 public extension Response.OutputItem.Reasoning {
-  enum `Type`: String, Codable, Hashable, Sendable {
-    case reasoning = "reasoning"
-  }
-
   struct SummaryText: Codable, Hashable, Sendable {
     public let type: `Type`
     public let text: String
+
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case summaryText = "summary_text"
+    }
 
     public init(type: Type, text: String) {
       self.type = type
@@ -266,26 +270,39 @@ public extension Response.OutputItem.Reasoning {
   }
 }
 
-public extension Response.OutputItem.Reasoning.SummaryText {
-  enum `Type`: String, Codable, Hashable, Sendable {
-    case summaryText = "summary_text"
-  }
-}
-
 public extension Response {
   enum Annotation: Hashable, Sendable, Codable {
+    case fileCitation(FileCitation)
     case urlCitation(URLCitation)
+    case filePath(FilePath)
 
     public init(from decoder: Decoder) throws {
       let container = try decoder.singleValueContainer()
-      let citation = try container.decode(URLCitation.self)
-      self = .urlCitation(citation)
+      if let citation = try? container.decode(URLCitation.self) {
+        self = .urlCitation(citation)
+        return
+      }
+      if let citation = try? container.decode(FileCitation.self) {
+        self = .fileCitation(citation)
+      }
+      if let citation = try? container.decode(FilePath.self) {
+        self = .filePath(citation)
+        return
+      }
+      throw DecodingError.typeMismatch(
+        Annotation.self,
+        DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Unknown Annotation type")
+      )
     }
 
     public func encode(to encoder: Encoder) throws {
       var container = encoder.singleValueContainer()
       switch self {
+      case .fileCitation(let citation):
+        try container.encode(citation)
       case .urlCitation(let citation):
+        try container.encode(citation)
+      case .filePath(let citation):
         try container.encode(citation)
       }
     }
@@ -302,6 +319,26 @@ public extension Response.Annotation {
 
     public enum `Type`: String, Codable, Hashable, Sendable {
       case urlCitation = "url_citation"
+    }
+  }
+
+  struct FileCitation: Codable, Hashable, Sendable {
+    public let type: `Type`
+    public let fildId: String
+    public let index: Int
+
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case fileCitation = "file_citation"
+    }
+  }
+
+  struct FilePath: Codable, Hashable, Sendable {
+    public let type: `Type`
+    public let fildId: String
+    public let index: Int
+
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case filePath = "file_path"
     }
   }
 }

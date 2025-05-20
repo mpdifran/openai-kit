@@ -89,7 +89,7 @@ struct NIORequestHandler: RequestHandler {
                     for try await buffer in response.body {
                         let text = String(buffer: buffer)
 
-                        print("[TRACE] Raw text buffer: \(text)")
+//                        print("[TRACE] Raw text buffer: \(text)")
 
                         // Append to the buffer, and break up by newline. A complete frame will have 2 newlines at the end. This means lines.last will either be an empty string, or an incomplete frame.
                         pending += text
@@ -111,15 +111,28 @@ struct NIORequestHandler: RequestHandler {
                             }
 
                             // Decode and yield valid JSON frames
-                            guard
-                                let jsonData = dataValue.data(using: .utf8),
-                                let value = try? decoder.decode(T.self, from: jsonData)
-                            else {
-                                print("[TRACE] Could not decode event: \(dataValue)")
+                            guard let jsonData = dataValue.data(using: .utf8) else {
                                 continue
                             }
 
-                            continuation.yield(value)
+                            do {
+                                let value = try decoder.decode(T.self, from: jsonData)
+                                continuation.yield(value)
+                            } catch {
+                                print("[TRACE] Could not decode event: \(dataValue)")
+                                print("Decoding Error: \(error)")
+                            }
+
+//                            guard
+//                                let jsonData = dataValue.data(using: .utf8),
+//                                let value = try? decoder.decode(T.self, from: jsonData)
+//                            else {
+//                                print("[TRACE] Could not decode event: \(dataValue)")
+//                              print()
+//                                continue
+//                            }
+//
+//                            continuation.yield(value)
                         }
                     }
                     continuation.finish()
