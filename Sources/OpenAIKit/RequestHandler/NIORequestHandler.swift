@@ -108,13 +108,14 @@ struct NIORequestHandler: RequestHandler {
                                 return
                             }
 
-                            print("[TRACE] \(dataValue)")
-
                             // Decode and yield valid JSON frames
                             guard
                                 let jsonData = dataValue.data(using: .utf8),
                                 let value = try? decoder.decode(T.self, from: jsonData)
-                            else { continue }
+                            else {
+                                print("[TRACE] Could not decode event: \(dataValue)")
+                                continue
+                            }
 
                             continuation.yield(value)
                         }

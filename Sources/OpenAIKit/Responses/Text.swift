@@ -1,20 +1,28 @@
 //
-//  Content.swift
+//  Text.swift
 //  openai-kit
 //
-//  Created by Mark DiFranco on 2025-02-10.
+//  Created by Mark DiFranco on 2025-05-18.
 //
 
-public extension ResponseFormat {
-    enum `Type`: Codable, Hashable, Sendable {
+import Foundation
+
+public struct Text: Encodable {
+    public let format: Format?
+
+    public init(format: Format?) {
+        self.format = format
+    }
+}
+
+public struct Format: Encodable {
+    public enum `Type`: Codable, Hashable, Sendable {
         case auto
         case text
         case jsonObject
         case jsonSchema(ResponseSchema)
     }
-}
 
-public struct ResponseFormat: Codable, Hashable, Sendable {
     public let type: `Type`
 
     public init(type: `Type`) {
