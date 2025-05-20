@@ -10,6 +10,7 @@ import NIOHTTP1
 import Foundation
 
 public struct CreateResponseRequest: Request {
+    let headers: HTTPHeaders = ["OpenAI-Beta" : "responses=v1"]
     let method: HTTPMethod = .POST
     let path = "/responses"
     let body: Data?
