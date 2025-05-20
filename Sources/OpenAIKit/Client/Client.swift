@@ -8,6 +8,7 @@ public struct Client: Sendable {
     public let audio: AudioProvider
     public let chats: ChatProvider
     public let assistants: AssistantProvider
+    public let responses: ResponsesProvider
     public let completions: CompletionProvider
     public let edits: EditProvider
     public let embeddings: EmbeddingProvider
@@ -22,6 +23,7 @@ public struct Client: Sendable {
         self.completions = CompletionProvider(requestHandler: requestHandler)
         self.chats = ChatProvider(requestHandler: requestHandler)
         self.assistants = AssistantProvider(requestHandler: requestHandler)
+        self.responses = ResponsesProvider(requestHandler: requestHandler)
         self.edits = EditProvider(requestHandler: requestHandler)
         self.images = ImageProvider(requestHandler: requestHandler)
         self.embeddings = EmbeddingProvider(requestHandler: requestHandler)
