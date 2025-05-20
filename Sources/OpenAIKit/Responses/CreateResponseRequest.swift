@@ -33,7 +33,7 @@ public struct CreateResponseRequest: Request {
     ) throws {
         let body = Body(
             input: input,
-            model: model,
+            model: model.id,
             instructions: instructions,
             parallelToolCalls: parallelToolCalls,
             previousResponseID: previousResponseID,
@@ -55,7 +55,7 @@ public struct CreateResponseRequest: Request {
 public extension CreateResponseRequest {
     struct Body: Encodable {
         let input: [Response.InputItem]
-        let model: ModelID
+        let model: String
         let instructions: String?
         let parallelToolCalls: Bool?
         let previousResponseID: String?
