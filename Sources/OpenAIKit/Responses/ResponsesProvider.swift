@@ -25,6 +25,7 @@ public struct ResponsesProvider: Sendable {
      Creates a model response. Provide text or image inputs to generate text or JSON outputs. Have the model call your own custom code or use built-in tools like web search or file search to use your own data as input for the model's response.
      */
     public func createResponse(
+        input: [Response.InputItem],
         model: ModelID,
         instructions: String? = nil,
         parallelToolCalls: Bool? = nil,
@@ -39,6 +40,7 @@ public struct ResponsesProvider: Sendable {
         user: String? = nil
     ) async throws -> Response {
         let request = try CreateResponseRequest(
+            input: input,
             model: model,
             instructions: instructions,
             parallelToolCalls: parallelToolCalls,
@@ -67,6 +69,7 @@ public struct ResponsesProvider: Sendable {
      Creates a model response. Provide text or image inputs to generate text or JSON outputs. Have the model call your own custom code or use built-in tools like web search or file search to use your own data as input for the model's response.
      */
     public func createAndStreamResponse(
+        input: [Response.InputItem],
         model: ModelID,
         instructions: String? = nil,
         parallelToolCalls: Bool? = nil,
@@ -81,6 +84,7 @@ public struct ResponsesProvider: Sendable {
         user: String? = nil
     ) async throws -> AsyncThrowingStream<Response.StreamEvent, Error> {
         let request = try CreateResponseRequest(
+            input: input,
             model: model,
             instructions: instructions,
             parallelToolCalls: parallelToolCalls,

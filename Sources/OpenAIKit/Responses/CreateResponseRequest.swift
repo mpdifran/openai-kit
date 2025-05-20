@@ -15,6 +15,7 @@ public struct CreateResponseRequest: Request {
     let body: Data?
 
     init(
+        input: [Response.InputItem],
         model: ModelID,
         instructions: String?,
         parallelToolCalls: Bool?,
@@ -30,6 +31,7 @@ public struct CreateResponseRequest: Request {
         stream: Bool?
     ) throws {
         let body = Body(
+            input: input,
             model: model,
             instructions: instructions,
             parallelToolCalls: parallelToolCalls,
@@ -51,6 +53,7 @@ public struct CreateResponseRequest: Request {
 
 public extension CreateResponseRequest {
     struct Body: Encodable {
+        let input: [Response.InputItem]
         let model: ModelID
         let instructions: String?
         let parallelToolCalls: Bool?

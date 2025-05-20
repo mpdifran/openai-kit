@@ -17,7 +17,7 @@ public struct Response: Codable, Hashable, Sendable {
 
 public extension Response {
     enum Status: String, Codable, Hashable, Sendable {
-        case complte
+        case complete
         case failed
         case inProgress = "in_progress"
         case incomplete
