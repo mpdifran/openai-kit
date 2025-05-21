@@ -1,11 +1,13 @@
 //
-//  Logger.swift
+//  LogHelper.swift
 //  openai-kit
 //
 //  Created by Mark DiFranco on 2025-05-21.
 //
 
-public extension Logger {
+import Foundation
+
+public extension LogHelper {
     enum LogLevel: Sendable {
         case none
         case warning
@@ -24,15 +26,15 @@ public extension Logger {
     }
 }
 
-public class Logger {
-    nonisolated(unsafe) public static let shared = Logger()
+public class LogHelper {
+    nonisolated(unsafe) public static let shared = LogHelper()
 
     private init() { }
 
     private var level: LogLevel = .none
 }
 
-extension Logger {
+extension LogHelper {
 
     public func set(logLevel: LogLevel) {
         self.level = logLevel
