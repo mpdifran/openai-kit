@@ -89,7 +89,7 @@ struct NIORequestHandler: RequestHandler {
                     for try await buffer in response.body {
                         let text = String(buffer: buffer)
 
-//                        print("[TRACE] Raw text buffer: \(text)")
+                        print("[TRACE] Raw text buffer: \(text)")
 
                         // Append to the buffer, and break up by newline. A complete frame will have 2 newlines at the end. This means lines.last will either be an empty string, or an incomplete frame.
                         pending += text
