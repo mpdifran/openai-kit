@@ -24,8 +24,8 @@ public extension Logger {
     }
 }
 
-public struct Logger: Sendable {
-    public static let shared = Logger()
+public class Logger {
+    nonisolated(unsafe) public static let shared = Logger()
 
     private init() { }
 
@@ -34,7 +34,7 @@ public struct Logger: Sendable {
 
 extension Logger {
 
-    public mutating func set(logLevel: LogLevel) {
+    public func set(logLevel: LogLevel) {
         self.level = logLevel
     }
 
