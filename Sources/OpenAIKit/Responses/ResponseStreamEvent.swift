@@ -439,6 +439,10 @@ public extension Response {
 
     /// Payload for the `response.error` server-sent event.
     struct ErrorEvent: Codable, Hashable, Sendable {
+        public let error: ResponseError
+    }
+
+    struct ResponseError: Codable, Hashable, Sendable {
         public let type: String
         public let message: String
         public let code: String?
