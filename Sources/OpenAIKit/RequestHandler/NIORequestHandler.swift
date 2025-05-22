@@ -91,6 +91,12 @@ struct NIORequestHandler: RequestHandler {
 
                         LogHelper.shared.log(.debug, "Raw text buffer: \(text)")
 
+                        // For some reason, errors are returned completely different from any other frame. The JSON is contained within a single frame, so try and parse it here.
+                        if let value = try? decoder.decode(T.self, from: buffer) {
+                            continuation.yield(value)
+                            continue
+                        }
+
                         // Append to the buffer, and break up by newline. A complete frame will have 2 newlines at the end. This means lines.last will either be an empty string, or an incomplete frame.
                         pending += text
                         let lines = pending.components(separatedBy: .newlines)
