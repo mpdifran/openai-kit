@@ -35,16 +35,28 @@ public struct ModelID: Codable, Hashable, Sendable {
 }
 
 extension ModelID {
+    public enum OSeries {
+        public static let o1 = ModelID(id: "o1")
+        public static let o1Preview = ModelID(id: "o1-preview")
+        public static let o1Mini = ModelID(id: "o1-mini")
+        public static let o1Pro = ModelID(id: "o1-pro")
+        public static let o3Mini = ModelID(id: "o3-mini")
+        public static let o4Mini = ModelID(id: "o4-mini")
+    }
+
     public enum GPT4 {
         public static let gpt4 = ModelID(id: "gpt-4")
         public static let gpt4Turbo = ModelID(id: "gpt-4-turbo")
         public static let gpt40314 = ModelID(id: "gpt-4-0314")
         public static let gpt4_32k = ModelID(id: "gpt-4-32k")
         public static let gpt4_32k0314 = ModelID(id: "gpt-4-32k-0314")
+        public static let gpt4_1Nano = ModelID(id: "gpt-4.1-nano")
         public static let gpt_4o = ModelID(id: "gpt-4o")
         public static let gpt_4o_0513 = ModelID(id: "gpt-4o-2024-05-13")
         public static let gpt_4o_mini = ModelID(id: "gpt-4o-mini")
         public static let gpt_4o_mini_0718 = ModelID(id: "gpt-4o-mini-2024-07-18")
+        public static let gpt4_1 = ModelID(id: "gpt-4.1")
+        public static let gpt4_1Mini = ModelID(id: "gpt-4.1-mini")
     }
 
     public enum GPT3 {
