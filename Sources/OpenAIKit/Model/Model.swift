@@ -3,7 +3,7 @@ import Foundation
 /**
  List and describe the various models available in the API.
  */
-public struct Model: Codable {
+public struct Model: Codable, Hashable, Sendable {
     public let id: String
     public let object: String
     public let created: Date
@@ -14,7 +14,7 @@ public struct Model: Codable {
 }
 
 extension Model {
-    public struct Permission: Codable {
+    public struct Permission: Codable, Hashable, Sendable {
         public let id: String
         public let object: String
         public let created: Date
