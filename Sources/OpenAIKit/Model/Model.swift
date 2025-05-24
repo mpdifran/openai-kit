@@ -8,8 +8,8 @@ public struct Model: Codable, Hashable, Sendable {
     public let object: String
     public let created: Date
     public let ownedBy: String
-    public let permission: [Permission]
-    public let root: String
+    public let permission: [Permission]?
+    public let root: String?
     public let parent: String?
 }
 
