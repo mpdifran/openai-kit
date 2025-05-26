@@ -324,7 +324,7 @@ public extension Response.Annotation {
 
   struct FileCitation: Codable, Hashable, Sendable {
     public let type: `Type`
-    public let fildId: String
+    public let fileId: String
     public let index: Int
 
     public enum `Type`: String, Codable, Hashable, Sendable {
@@ -334,7 +334,7 @@ public extension Response.Annotation {
 
   struct FilePath: Codable, Hashable, Sendable {
     public let type: `Type`
-    public let fildId: String
+    public let fileId: String
     public let index: Int
 
     public enum `Type`: String, Codable, Hashable, Sendable {

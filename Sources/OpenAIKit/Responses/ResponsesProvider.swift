@@ -102,4 +102,20 @@ public struct ResponsesProvider: Sendable {
 
         return try await requestHandler.stream(request: request)
     }
+    
+    /**
+     List input items
+     GET
+     
+     https://api.openai.com/v1/responses/{response_id}/input_items
+     
+     List input items for a specific response. Input items are all the items that were sent to create the response, as well as any function call outputs that were submitted through the tool.
+     */
+    public func listInputItems(
+        responseID: String
+    ) async throws -> List<Response.InputItem> {
+        let request = ListInputItemsRequest(responseID: responseID)
+        
+        return try await requestHandler.perform(request: request)
+    }
 }

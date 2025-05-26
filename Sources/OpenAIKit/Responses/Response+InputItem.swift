@@ -88,6 +88,7 @@ public extension Response.InputItem {
     case text(InputText)
     case image(InputImage)
     case file(InputFile)
+    case audio(InputAudio)
 
     public init(from decoder: Decoder) throws {
       let container = try decoder.singleValueContainer()
@@ -97,6 +98,8 @@ public extension Response.InputItem {
         self = .image(image)
       } else if let file = try? container.decode(InputFile.self) {
         self = .file(file)
+      } else if let audio = try? container.decode(InputAudio.self) {
+        self = .audio(audio)
       } else {
         throw DecodingError.typeMismatch(
           Response.InputItem.self,
@@ -117,6 +120,8 @@ public extension Response.InputItem {
         try container.encode(image)
       case .file(let file):
         try container.encode(file)
+      case .audio(let audio):
+        try container.encode(audio)
       }
     }
   }
@@ -169,6 +174,25 @@ public extension Response.InputItem {
       self.filename = filename
     }
   }
+
+  struct InputAudio: Codable, Hashable, Sendable {
+    public let type: `Type`
+    public let fileId: String?
+    public let audioData: String?
+
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case inputAudio = "input_audio"
+    }
+
+    public init(
+      fileId: String? = nil,
+      audioData: String? = nil
+    ) {
+      self.type = .inputAudio
+      self.fileId = fileId
+      self.audioData = audioData
+    }
+  }
 }
 
 public extension Response.InputItem.InputText {
@@ -204,6 +228,7 @@ public extension Response.InputItem {
     case webSearchToolCall(Response.OutputItem.WebSearchToolCall)
     case functionToolCall(Response.OutputItem.FunctionToolCall)
     case functionToolCallOutput(Response.InputItem.FunctionToolCallOutput)
+    case webSearchToolCallOutput(Response.InputItem.WebSearchToolCallOutput)
     case reasoning(Response.OutputItem.Reasoning)
 
     public init(from decoder: Decoder) throws {
@@ -218,6 +243,8 @@ public extension Response.InputItem {
         self = .functionToolCall(funcCall)
       } else if let funcOutput = try? container.decode(Response.InputItem.FunctionToolCallOutput.self) {
         self = .functionToolCallOutput(funcOutput)
+      } else if let webOutput = try? container.decode(Response.InputItem.WebSearchToolCallOutput.self) {
+        self = .webSearchToolCallOutput(webOutput)
       } else if let reasoning = try? container.decode(Response.OutputItem.Reasoning.self) {
         self = .reasoning(reasoning)
       } else {
@@ -243,6 +270,8 @@ public extension Response.InputItem {
       case .functionToolCall(let call):
         try container.encode(call)
       case .functionToolCallOutput(let output):
+        try container.encode(output)
+      case .webSearchToolCallOutput(let output):
         try container.encode(output)
       case .reasoning(let reasoning):
         try container.encode(reasoning)
@@ -299,5 +328,34 @@ public extension Response.InputItem {
 public extension Response.InputItem.FunctionToolCallOutput {
   enum `Type`: String, Codable, Hashable, Sendable {
     case functionToolCallOutput = "function_call_output"
+  }
+}
+
+// MARK: - Web Search Tool Call Output
+
+public extension Response.InputItem {
+  struct WebSearchToolCallOutput: Codable, Hashable, Sendable {
+    public let type: `Type`
+    public let callId: String
+    public let output: String
+    public let id: String?
+    public let status: Response.Status?
+
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case webSearchToolCallOutput = "web_search_call_output"
+    }
+
+    public init(
+      callId: String,
+      output: String,
+      id: String? = nil,
+      status: Response.Status? = nil
+    ) {
+      self.type = .webSearchToolCallOutput
+      self.callId = callId
+      self.output = output
+      self.id = id
+      self.status = status
+    }
   }
 }
