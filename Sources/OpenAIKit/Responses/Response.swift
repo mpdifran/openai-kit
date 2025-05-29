@@ -13,6 +13,26 @@ public struct Response: Codable, Hashable, Sendable {
     public let model: String
     public let status: Status
     public let user: String?
+    public let output: [OutputItem]
+}
+
+public extension Response {
+    var outputText: String? {
+        let texts = output.compactMap { outputItem -> String? in
+            guard
+                case let .message(message) = outputItem,
+                message.role == .assistant
+            else { return nil }
+
+            let pieces = message.content.compactMap { content -> String? in
+                if case let .outputText(text) = content { return text.text }
+                return nil
+            }
+            return pieces.isEmpty ? nil : pieces.joined()
+        }
+        let joined = texts.joined()
+        return joined.isEmpty ? nil : joined
+    }
 }
 
 public extension Response {
