@@ -47,7 +47,8 @@ public struct Format: Encodable {
             case "json_object":
                 self.type = .jsonObject
             case "json_schema":
-                let schema = try container.decode(ResponseSchema.self, forKey: .jsonSchema)
+                // Decode the entire object as ResponseSchema
+                let schema = try ResponseSchema(from: decoder)
                 self.type = .jsonSchema(schema)
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid response format type.")
@@ -56,23 +57,25 @@ public struct Format: Encodable {
     }
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
         switch self.type {
         case .auto:
             var container = encoder.singleValueContainer()
             try container.encode("auto")
         case .text:
+            var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode("text", forKey: .type)
         case .jsonObject:
+            var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode("json_object", forKey: .type)
         case .jsonSchema(let schema):
+            // Encode the schema properties directly at the same level as "type"
+            try schema.encode(to: encoder)
+            var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode("json_schema", forKey: .type)
-            try container.encode(schema, forKey: .jsonSchema)
         }
     }
 
     enum CodingKeys: String, CodingKey {
         case type
-        case jsonSchema
     }
 }
