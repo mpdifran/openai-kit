@@ -28,6 +28,7 @@ public struct CreateResponseRequest: Request {
         text: Text?,
         toolChoice: Response.ToolChoice?,
         tools: [Response.Tool],
+        truncation: Response.Truncation?,
         user: String?,
         stream: Bool?
     ) throws {
@@ -44,6 +45,7 @@ public struct CreateResponseRequest: Request {
             text: text,
             toolChoice: toolChoice,
             tools: tools,
+            truncation: truncation,
             user: user,
             stream: stream
         )
@@ -66,6 +68,7 @@ public extension CreateResponseRequest {
         let text: Text?
         let toolChoice: Response.ToolChoice?
         let tools: [Response.Tool]
+        let truncation: Response.Truncation?
         let user: String?
         let stream: Bool?
     }

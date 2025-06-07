@@ -37,6 +37,7 @@ public struct ResponsesProvider: Sendable {
         text: Text? = nil,
         toolChoice: Response.ToolChoice? = nil,
         tools: [Response.Tool] = [],
+        truncation: Response.Truncation? = nil,
         user: String? = nil
     ) async throws -> Response {
         let request = try CreateResponseRequest(
@@ -52,6 +53,7 @@ public struct ResponsesProvider: Sendable {
             text: text,
             toolChoice: toolChoice,
             tools: tools,
+            truncation: truncation,
             user: user,
             stream: false
         )
@@ -81,6 +83,7 @@ public struct ResponsesProvider: Sendable {
         text: Text? = nil,
         toolChoice: Response.ToolChoice? = nil,
         tools: [Response.Tool] = [],
+        truncation: Response.Truncation? = nil,
         user: String? = nil
     ) async throws -> AsyncThrowingStream<Response.StreamEvent, Error> {
         let request = try CreateResponseRequest(
@@ -96,6 +99,7 @@ public struct ResponsesProvider: Sendable {
             text: text,
             toolChoice: toolChoice,
             tools: tools,
+            truncation: truncation,
             user: user,
             stream: true
         )

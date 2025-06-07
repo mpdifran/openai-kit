@@ -69,6 +69,11 @@ public extension Response {
         case concise
         case detailed
     }
+
+    enum Truncation: String, Encodable {
+        case auto
+        case disabled
+    }
 }
 
 public extension Response {
