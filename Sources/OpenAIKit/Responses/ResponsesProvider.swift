@@ -108,6 +108,22 @@ public struct ResponsesProvider: Sendable {
     }
     
     /**
+     Get a model response
+     GET
+     
+     https://api.openai.com/v1/responses/{response_id}
+     
+     Retrieves a response object by ID.
+     */
+    public func getResponse(
+        responseID: String
+    ) async throws -> Response {
+        let request = GetModelResponseRequest(responseID: responseID)
+        
+        return try await requestHandler.perform(request: request)
+    }
+    
+    /**
      List input items
      GET
      
