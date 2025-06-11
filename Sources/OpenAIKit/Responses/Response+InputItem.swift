@@ -52,6 +52,7 @@ public extension Response {
 
 public extension Response.InputItem {
   struct InputMessage: Codable, Hashable, Sendable {
+    public let id: String?
     public let type: `Type`
     public let role: Role
     public let content: [Content]
@@ -59,27 +60,25 @@ public extension Response.InputItem {
 
     public init(
       role: Role,
-      content: [Content],
-      status: Response.Status? = nil
+      content: [Content]
     ) {
+      self.id = nil
       self.type = .message
       self.role = role
       self.content = content
-      self.status = status
+      self.status = nil
     }
-  }
-}
 
-public extension Response.InputItem.InputMessage {
-  enum `Type`: String, Codable, Hashable, Sendable {
-    case message
-  }
+    public enum `Type`: String, Codable, Hashable, Sendable {
+      case message
+    }
 
-  enum Role: String, Codable, Hashable, Sendable {
-    case assistant
-    case user
-    case system
-    case developer
+    public enum Role: String, Codable, Hashable, Sendable {
+      case assistant
+      case user
+      case system
+      case developer
+    }
   }
 }
 
