@@ -40,6 +40,7 @@ extension ModelID {
         public static let o1Preview = ModelID(id: "o1-preview")
         public static let o1Mini = ModelID(id: "o1-mini")
         public static let o1Pro = ModelID(id: "o1-pro")
+        public static let o3 = ModelID(id: "o3")
         public static let o3Mini = ModelID(id: "o3-mini")
         public static let o4Mini = ModelID(id: "o4-mini")
     }
