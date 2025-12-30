@@ -45,6 +45,12 @@ extension ModelID {
         public static let o4Mini = ModelID(id: "o4-mini")
     }
 
+    public enum GPT5 {
+        public static let gpt5 = ModelID(id: "gpt-5")
+        public static let gpt5Mini = ModelID(id: "gpt-5-mini")
+        public static let gpt5Nano = ModelID(id: "gpt-5-nano")
+    }
+
     public enum GPT4 {
         public static let gpt4 = ModelID(id: "gpt-4")
         public static let gpt4Turbo = ModelID(id: "gpt-4-turbo")
